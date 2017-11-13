@@ -1,0 +1,112 @@
+.container-stats {
+    text-align: left;
+    background-color: #2c3338;
+    margin: 10px;
+}
+
+.container-stats h1,
+p {
+    color: white;
+}
+
+.container-stats.match h5 {
+    text-align: center;
+    color: white;
+}
+
+.container-stats.match .row {
+    margin: 10px;
+}
+
+.input-group {
+    margin: 10px;
+}
+
+#input-label {
+    background-color: #363b41;
+    color: #e7e7e7;
+}
+
+input.form-control {
+    background-color: #3b4148;
+    color: white;
+}
+
+input.form-control::placeholder {
+    color: #e7e7e7;
+}
+
+input.form-control:hover {
+    background-color: #434a52;
+    border: none;
+    color: white;
+}
+
+input.form-control:focus {
+    background-color: #434a52;
+    border: none;
+    color: white;
+}
+
+input.form-control:active {
+    background-color: #434a52;
+    border: none;
+    color: white;
+}
+
+#formation-dropdown-toggle {
+    background-color: #363b41;
+    color: #e7e7e7;
+    border-color: #363b41;
+    box-shadow: none;
+}
+
+#formation-dropdown>.dropdown-item.active,
+#formation-dropdown>.dropdown-item:active {
+    color: #fff;
+    text-decoration: none;
+    background-color: #3b4148;
+}
+
+#squad-type-selection>button {
+    background-color: white;
+    color: hsl(352, 92%, 31%);
+    border-radius: 10px;
+    margin: 5px;
+    border: 2px solid hsl(352, 92%, 31%);
+}
+
+#squad-type-selection>button:active {
+    background-color: hsl(352, 92%, 31%);
+    color: white;
+}
+
+#squad-type-selection>button:focus {
+    box-shadow: none;
+}
+
+#squad-type-selection>button.active {
+    background-color: hsl(352, 92%, 31%);
+    color: white;
+    border: 2px solid hsl(352, 92%, 31%);
+    box-shadow: none;
+}
+
+#stats-input {
+    background-color: #2c3338;
+    border: 0;
+    outline: 0;
+    border-bottom: 2px solid #434a52;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+#stats-input:focus {
+    border-bottom: 2px solid hsl(352, 92%, 31%);
+}

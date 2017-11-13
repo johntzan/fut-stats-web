@@ -1,28 +1,28 @@
-import GridColumn from 'semantic-ui-react/dist/commonjs/collections/Grid/GridColumn';
 import React, {Component} from 'react';
-import {Container, Grid} from 'semantic-ui-react';
 import NewMatchStats from './NewMatchStats';
 import UserInfo from './UserInfo';
 import OpponentInfo from './OpponentInfo';
+import {Container, Row, Col} from 'reactstrap';
+import './NewMatch.css';
 
 class NewMatch extends Component {
     render() {
         return (
-            <Container className="container">
-                <Grid textAlign="center" divided columns={2}>
-                    <Grid.Row>
-                        <Grid.Column >
-                            <UserInfo></UserInfo>
-                        </Grid.Column>
-                        <GridColumn>
-                            <OpponentInfo></OpponentInfo>
-                        </GridColumn>
-                    </Grid.Row>
+            <Container className="container-main">
+                <Row>
+                    <Col md="6">
+                        <UserInfo></UserInfo>
+                    </Col>
+                    <Col md="6">
+                        <OpponentInfo></OpponentInfo>
+                    </Col>
+                </Row>
 
-                    <Grid.Row>
+                <Row>
+                    <Col xs="12">
                         <NewMatchStats></NewMatchStats>
-                    </Grid.Row>
-                </Grid>
+                    </Col>
+                </Row>
             </Container>
         );
     }

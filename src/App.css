@@ -1,4 +1,4 @@
-h1.ui.header.title-bar {
+h1.title-bar {
     color: #FFF;
     background-color: hsl(352, 92%, 31%);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -11,11 +11,14 @@ h1.ui.header.title-bar {
 }
 
 .container {
-    background-color: #363946;
-    margin-top: 100px;
-    z-index: 1;
-    padding: 50px;
+    /* background-color: #2c3338; */
+    padding: 25px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.container-main {
+    margin-top: 100px;
+    background-color: #2c3338;
 }
 
 .example-content {

@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
-import 'semantic-ui-css/semantic.min.css';
 import AppRouter from './routes';
+import 'bootstrap/dist/css/bootstrap.css';
 
 ReactDOM.render(
     <AppRouter/>, document.getElementById('root'));
