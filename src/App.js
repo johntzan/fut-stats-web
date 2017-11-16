@@ -13,7 +13,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1 className="title-bar text-center">FUT STATS</h1>
+        <h3 className="title-bar text-center">FUT STATS</h3>
         <Switch>
           <Route exact path="/" component={Main}></Route>
           <Route path="/new-match" component={NewMatch}></Route>

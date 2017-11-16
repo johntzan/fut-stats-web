@@ -9,6 +9,10 @@ p {
     color: white;
 }
 
+.container-stats h1 {
+    margin-bottom: 20px;
+}
+
 .container-stats.match h5 {
     text-align: center;
     color: white;
@@ -30,6 +34,7 @@ p {
 input.form-control {
     background-color: #3b4148;
     color: white;
+    border: none;
 }
 
 input.form-control::placeholder {
@@ -54,18 +59,22 @@ input.form-control:active {
     color: white;
 }
 
-#formation-dropdown-toggle {
+hr {
+    background-color: hsl(352, 92%, 31%);
+}
+
+button.dropdown-toggle {
     background-color: #363b41;
     color: #e7e7e7;
     border-color: #363b41;
     box-shadow: none;
 }
 
-#formation-dropdown>.dropdown-item.active,
-#formation-dropdown>.dropdown-item:active {
+div.dropdown-menu>.dropdown-item:active {
     color: #fff;
     text-decoration: none;
     background-color: #3b4148;
+    box-shadow: none;
 }
 
 #squad-type-selection>button {
@@ -99,6 +108,15 @@ input.form-control:active {
     border-bottom: 2px solid #434a52;
 }
 
+#stats-input:hover {
+    border-bottom: 2px solid hsl(352, 92%, 31%);
+}
+
+input.form-control::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: hsl(216, 2%, 46%);
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
@@ -109,4 +127,30 @@ input::-webkit-inner-spin-button {
 
 #stats-input:focus {
     border-bottom: 2px solid hsl(352, 92%, 31%);
+}
+
+button.back-btn {
+    background-color: transparent;
+    border: none;
+}
+
+button.back-btn:hover,
+button.back-btn:focus,
+button.back-btn:active {
+    background-color: transparent;
+    background-image: none;
+    border: none;
+}
+
+h3.page-title {
+    color: white;
+    margin-top: 28px;
+    margin-bottom: 28px;
+    margin-left: 5px;
+}
+
+button.save-btn {
+    background-color: hsl(352, 92%, 31%);
+    border: none;
+    margin: 28px;
 }

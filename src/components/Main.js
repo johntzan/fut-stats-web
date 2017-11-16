@@ -20,7 +20,7 @@ class Main extends Component {
         return (
             <Container className="container-main" computer only>
                 <Row>
-                    <Col >
+                    <Col className="text-center">
                         <Link to='/new-match'>
                             <GetStartedButton
                                 handleClick={this
