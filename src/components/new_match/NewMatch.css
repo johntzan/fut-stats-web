@@ -77,6 +77,10 @@ div.dropdown-menu>.dropdown-item:active {
     box-shadow: none;
 }
 
+#squad-type-selection {
+    display: inline-block;
+}
+
 #squad-type-selection>button {
     background-color: white;
     color: hsl(352, 92%, 31%);
@@ -134,12 +138,17 @@ button.back-btn {
     border: none;
 }
 
-button.back-btn:hover,
 button.back-btn:focus,
 button.back-btn:active {
     background-color: transparent;
     background-image: none;
     border: none;
+    box-shadow: none;
+}
+
+button.back-btn:hover {
+    border: 1px solid white;
+    background-color: transparent;
 }
 
 h3.page-title {
@@ -153,4 +162,17 @@ button.save-btn {
     background-color: hsl(352, 92%, 31%);
     border: none;
     margin: 28px;
+}
+
+textarea.general-notes {
+    background-color: #3b4148;
+    color: white;
+    border: none;
+}
+
+textarea.general-notes:focus,
+textarea.general-notes:active {
+    background-color: #434a52;
+    border: none;
+    color: white;
 }

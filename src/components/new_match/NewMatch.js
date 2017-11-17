@@ -14,14 +14,20 @@ class NewMatch extends Component {
         return (
             <Container className="container-main">
                 <Row clearfix>
-                    <Button size="lg" className="back-btn float-left"><MdArrowBack/></Button>
+                    <Link
+                        to="/"
+                        style={{
+                        display: 'inline-flex'
+                    }}>
+                        <Button size="lg" className="back-btn float-left"><MdArrowBack/></Button>
+                    </Link>
                     <h3 className="page-title">Create New Match</h3>
                 </Row>
                 <Row>
-                    <Col md="6">
+                    <Col lg="6">
                         <UserInfo></UserInfo>
                     </Col>
-                    <Col md="6">
+                    <Col lg="6">
                         <OpponentInfo></OpponentInfo>
                     </Col>
                 </Row>

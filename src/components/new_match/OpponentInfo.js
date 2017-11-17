@@ -112,6 +112,13 @@ class OpponentInfo extends Component {
                                 .includes("Serie A")}>Serie A</Button>
                             <Button
                                 size="sm"
+                                onClick={() => this.onCheckboxBtnClick("Bundes")}
+                                active={this
+                                .state
+                                .cSelected
+                                .includes("Bundes")}>Bundes</Button>
+                            <Button
+                                size="sm"
                                 onClick={() => this.onCheckboxBtnClick("La Liga")}
                                 active={this
                                 .state
@@ -119,11 +126,32 @@ class OpponentInfo extends Component {
                                 .includes("La Liga")}>La Liga</Button>
                             <Button
                                 size="sm"
-                                onClick={() => this.onCheckboxBtnClick("Bundesliga")}
+                                onClick={() => this.onCheckboxBtnClick("Ligue 1")}
                                 active={this
                                 .state
                                 .cSelected
-                                .includes("Bundesliga")}>Bundesliga</Button>
+                                .includes("Ligue 1")}>Ligue 1</Button>
+                            <Button
+                                size="sm"
+                                onClick={() => this.onCheckboxBtnClick("Hybrid")}
+                                active={this
+                                .state
+                                .cSelected
+                                .includes("Hybrid")}>Hybrid</Button>
+                            <Button
+                                size="sm"
+                                onClick={() => this.onCheckboxBtnClick("1 Nation")}
+                                active={this
+                                .state
+                                .cSelected
+                                .includes("1 Nation")}>1 Nation</Button>
+                            <Button
+                                size="sm"
+                                onClick={() => this.onCheckboxBtnClick("Other")}
+                                active={this
+                                .state
+                                .cSelected
+                                .includes("Other")}>Other</Button>
                         </ButtonGroup>
                     </FormGroup>
 

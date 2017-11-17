@@ -4,14 +4,12 @@ import {
     Form,
     FormGroup,
     Input,
-    Button,
     InputGroup,
     InputGroupAddon,
     ButtonDropdown,
     DropdownItem,
     DropdownToggle,
-    DropdownMenu,
-    ButtonGroup
+    DropdownMenu
 } from 'reactstrap';
 
 class UserInfo extends Component {
@@ -71,16 +69,16 @@ class UserInfo extends Component {
                         marginLeft: '8px',
                         marginRight: '8px',
                         display: 'inline-block'
-                    }}>Choose existing squad?</p>
+                    }}>Your Squad:</p>
 
                     <ButtonDropdown
                         isOpen={this.state.squadListDropdownOpen}
                         toggle={this.toggleSquadList}>
                         <DropdownToggle id="squad-list-dropdown-toggle" caret>
-                            Squad List
+                            My Squads
                         </DropdownToggle>
                         <DropdownMenu id='squad-list-dropdown'>
-                            <DropdownItem>New Squad</DropdownItem>
+                            <DropdownItem>Serie A</DropdownItem>
                         </DropdownMenu>
                     </ButtonDropdown>
                 </div>
