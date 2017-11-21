@@ -11,6 +11,7 @@ import {
     DropdownToggle,
     DropdownMenu
 } from 'reactstrap';
+import formations from '../../helpers/formations';
 
 class UserInfo extends Component {
 
@@ -45,7 +46,6 @@ class UserInfo extends Component {
 
     render() {
 
-        const formations = ["4-1-2-1-2", "4-3-2-1", "4-2-3-1", "4-3-3(4)", "4-3-1-2"];
         const formationsList = formations.map((formation) => <DropdownItem
             onClick={this.props.handleUserInfoChanges}
             name="userFormationSelected"

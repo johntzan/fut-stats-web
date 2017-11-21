@@ -93,9 +93,6 @@ class NewMatch extends Component {
     }
 
     handleMatchResultsChecks(event) {
-        console.log('====================================');
-        console.log(event.target.name);
-        console.log('====================================');
         const checkType = event.target.name;
         const matchResults = this.state.matchResults;
 
@@ -199,12 +196,12 @@ class NewMatch extends Component {
                     <h3 className="page-title">Create New Match</h3>
                 </Row>
                 <Row>
-                    <Col lg="6">
+                    <Col lg="6" xs="12">
                         <UserInfo
                             userInfo={this.state.userInfo}
                             handleUserInfoChanges={this.handleUserInfoChanges}></UserInfo>
                     </Col>
-                    <Col lg="6">
+                    <Col lg="6" xs="12">
                         <OpponentInfo
                             oppInfo={this.state.oppInfo}
                             handleOppInfoChanges={this.handleOppInfoChanges}
@@ -214,7 +211,9 @@ class NewMatch extends Component {
 
                 <Row>
                     <Col xs="12">
-                        <NewMatchStats handleMatchStatsChanges={this.handleMatchStatsChanges}></NewMatchStats>
+                        <NewMatchStats
+                            matchStats={this.state.matchStats}
+                            handleMatchStatsChanges={this.handleMatchStatsChanges}></NewMatchStats>
                     </Col>
                 </Row>
                 <Row>

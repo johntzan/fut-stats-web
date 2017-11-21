@@ -13,6 +13,15 @@ p {
     margin-bottom: 20px;
 }
 
+@media (max-width:325px) {
+    .container-stats.match .row {
+        margin: 5px !important;
+    }
+    .container-stats.match h5 {
+        font-size: 1em;
+    }
+}
+
 .container-stats.match h5 {
     text-align: center;
     color: white;
@@ -131,6 +140,18 @@ input::-webkit-inner-spin-button {
 
 #stats-input:focus {
     border-bottom: 2px solid hsl(352, 92%, 31%);
+}
+
+#stats-input.is-invalid {
+    border: 2px solid hsl(352, 92%, 31%) !important;
+}
+
+#stats-input.is-valid:focus {
+    box-shadow: none;
+}
+
+#stats-input.is-invalid:focus {
+    box-shadow: none;
 }
 
 button.back-btn {

@@ -3,6 +3,49 @@ import {Container, Row, Col, Input, Form} from 'reactstrap';
 
 class NewMatchStats extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            userGoals: true,
+            oppGoals: true,
+            userShots: true,
+            oppShots: true,
+            userShotsOnGoal: true,
+            oppShotsOnGoal: true,
+            userPossession: true,
+            oppPossession: true,
+            userTackles: true,
+            oppTackles: true,
+            userCorners: true,
+            oppCorners: true,
+            userPassAccuracy: true,
+            oppPassAccuracy: true
+
+        }
+        this.checkValidInput = this
+            .checkValidInput
+            .bind(this);
+    }
+
+    checkValidInput(event) {
+        let name = event.target.name;
+
+        if (event.target.value.length <= 2) {
+            this.setState({[name]: true})
+            this
+                .props
+                .handleMatchStatsChanges(event);
+        } else {
+            const newEvent = event;
+            newEvent.target.value = '';
+            this
+                .props
+                .handleMatchStatsChanges(newEvent);
+            this.setState({[name]: false})
+        }
+    }
+
     render() {
         return (
             <Container className="container-stats match">
@@ -16,13 +59,41 @@ class NewMatchStats extends Component {
                     </Col>
                 </Row>
                 <Form>
-                    <StatsInput stat="Goals" onChange={this.props.handleMatchStatsChanges}></StatsInput>
-                    <StatsInput stat="Shots" onChange={this.props.handleMatchStatsChanges}></StatsInput>
-                    <StatsInput stat="Shots On Goal" onChange={this.props.handleMatchStatsChanges}></StatsInput>
-                    <StatsInput stat="Possession" onChange={this.props.handleMatchStatsChanges}></StatsInput>
-                    <StatsInput stat="Tackles" onChange={this.props.handleMatchStatsChanges}></StatsInput>
-                    <StatsInput stat="Corners" onChange={this.props.handleMatchStatsChanges}></StatsInput>
-                    <StatsInput stat="Pass Accuracy" onChange={this.props.handleMatchStatsChanges}></StatsInput>
+                    <StatsInput
+                        stat="Goals"
+                        userValid={this.state.userGoals}
+                        oppValid={this.state.oppGoals}
+                        onChange={this.checkValidInput}></StatsInput>
+                    <StatsInput
+                        stat="Shots"
+                        userValid={this.state.userShots}
+                        oppValid={this.state.oppShots}
+                        onChange={this.checkValidInput}></StatsInput>
+                    <StatsInput
+                        stat="Shots On Goal"
+                        userValid={this.state.userShotsOnGoal}
+                        oppValid={this.state.oppShotsOnGoal}
+                        onChange={this.checkValidInput}></StatsInput>
+                    <StatsInput
+                        stat="Possession"
+                        userValid={this.state.userPossession}
+                        oppValid={this.state.oppPossession}
+                        onChange={this.checkValidInput}></StatsInput>
+                    <StatsInput
+                        stat="Tackles"
+                        userValid={this.state.userTackles}
+                        oppValid={this.state.oppTackles}
+                        onChange={this.checkValidInput}></StatsInput>
+                    <StatsInput
+                        stat="Corners"
+                        userValid={this.state.userCorners}
+                        oppValid={this.state.oppCorners}
+                        onChange={this.checkValidInput}></StatsInput>
+                    <StatsInput
+                        stat="Pass Accuracy"
+                        userValid={this.state.userPassAccuracy}
+                        oppValid={this.state.oppPassAccuracy}
+                        onChange={this.checkValidInput}></StatsInput>
                 </Form>
 
             </Container>
@@ -41,6 +112,7 @@ const StatsInput = (props) => {
         <Row>
             <Col>
                 <Input
+                    valid={props.userValid}
                     type="number"
                     name={userInput}
                     className="text-center"
@@ -53,6 +125,7 @@ const StatsInput = (props) => {
             </Col>
             <Col>
                 <Input
+                    valid={props.oppValid}
                     type="number"
                     name={oppInput}
                     className="text-center"
