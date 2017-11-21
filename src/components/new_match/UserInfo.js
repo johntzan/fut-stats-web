@@ -17,21 +17,17 @@ class UserInfo extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            dropdownOpen: false,
+            squadListDropdownOpen: false
+        };
+
         this.toggle = this
             .toggle
             .bind(this);
         this.toggleSquadList = this
             .toggleSquadList
             .bind(this);
-        this.userFormationOnClick = this
-            .userFormationOnClick
-            .bind(this);
-
-        this.state = {
-            dropdownOpen: false,
-            cSelected: [],
-            UserformationSelected: "Formation"
-        };
 
     }
 
@@ -47,14 +43,15 @@ class UserInfo extends Component {
         });
     }
 
-    userFormationOnClick() {
-        console.log('====================================');
-        console.log();
-        console.log('====================================');
-        this.setState({UserformationSelected: ''});
-    }
-
     render() {
+
+        const formations = ["4-1-2-1-2", "4-3-2-1", "4-2-3-1", "4-3-3(4)", "4-3-1-2"];
+        const formationsList = formations.map((formation) => <DropdownItem
+            onClick={this.props.handleUserInfoChanges}
+            name="userFormationSelected"
+            key={formation}
+            value={formation}>{formation}</DropdownItem>);
+
         return (
             <Container className="container-stats">
                 <h1 className="text-center">User Info</h1>
@@ -95,19 +92,28 @@ class UserInfo extends Component {
                     </InputGroup>
                     <InputGroup>
                         <InputGroupAddon id='input-label'>Squad Name / Type</InputGroupAddon>
-                        <Input/>
+                        <Input
+                            name="userTeamName"
+                            onChange={this.props.handleUserInfoChanges}
+                            value={this.props.userInfo.userTeamName}/>
                     </InputGroup>
                     <FormGroup>
                         <InputGroup>
                             <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                                 <DropdownToggle id="formation-dropdown-toggle" caret>
-                                    {this.state.UserformationSelected}
+                                    {this.props.userInfo.userFormationSelected}
                                 </DropdownToggle>
                                 <DropdownMenu id='formation-dropdown'>
                                     {formationsList}
                                 </DropdownMenu>
                             </ButtonDropdown>
-                            <Input type="number" className="text-center" placeholder='Team Rating'/>
+                            <Input
+                                type="number"
+                                name="userTeamRating"
+                                onChange={this.props.handleUserInfoChanges}
+                                value={this.props.userInfo.userTeamRating}
+                                className="text-center"
+                                placeholder='Team Rating'/>
                         </InputGroup>
                     </FormGroup>
                 </Form>
@@ -115,11 +121,5 @@ class UserInfo extends Component {
         );
     }
 }
-
-const formations = ["4-1-2-1-2", "4-3-2-1", "4-2-3-1", "4-3-3(4)", "4-3-1-2"];
-const formationsList = formations.map((formation) => <DropdownItem
-    onClick={() => this.userFormationOnClick}
-    key={formation}
-    value={formation}>{formation}</DropdownItem>);
 
 export default UserInfo;

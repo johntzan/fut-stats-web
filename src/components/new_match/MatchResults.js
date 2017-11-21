@@ -11,83 +11,13 @@ import {
 
 class MatchResults extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            rageQuitChecked: false,
-            rageQuitMinute: "",
-            disconnectedFromEA: false,
-            matchGeneralNotes: "",
-            showPenalties: false,
-            userPenScore: "",
-            oppPenScore: ""
-        };
-
-        this.handleRageQuitCheckbox = this
-            .handleRageQuitCheckbox
-            .bind(this);
-
-        this.handleDisconnectCheckbox = this
-            .handleDisconnectCheckbox
-            .bind(this);
-
-        this.updateGeneralNotes = this
-            .updateGeneralNotes
-            .bind(this);
-
-        this.updateRageQuitMinute = this
-            .updateRageQuitMinute
-            .bind(this);
-
-        this.updateUserPenalties = this
-            .updateUserPenalties
-            .bind(this);
-
-        this.updateOppPenalties = this
-            .updateOppPenalties
-            .bind(this);
-
-    }
-
-    handleRageQuitCheckbox() {
-        this.setState({
-            rageQuitChecked: !this.state.rageQuitChecked
-        })
-    }
-
-    updateRageQuitMinute(e) {
-        console.log('====================================');
-        console.log(e.target.value);
-        console.log('====================================');
-        this.setState({rageQuitMinute: e.target.value})
-    }
-
-    handleDisconnectCheckbox() {
-        this.setState({
-            disconnectedFromEA: !this.state.disconnectedFromEA
-        })
-    }
-
-    updateGeneralNotes(e) {
-        this.setState({matchGeneralNotes: e.target.value})
-    }
-
-    updateUserPenalties(e) {
-        this.setState({userPenScore: e.target.value})
-    }
-
-    updateOppPenalties(e) {
-        this.setState({oppPenScore: e.target.value})
-    }
-
     render() {
 
         return (
             <Container className="container-stats match">
                 <Form>
                     <FormGroup check>
-                        {this.state.showPenalties && <div>
+                        {(this.props.matchStats.userGoals.length > 0 && this.props.matchStats.userGoals === this.props.matchStats.oppGoals) && <div>
                             <Row>
                                 <Label check>
                                     <Input type="checkbox" checked disabled/>
@@ -104,8 +34,9 @@ class MatchResults extends Component {
                                 <Col>
                                     <Input
                                         type="number"
-                                        onChange={this.updateUserPenalties}
-                                        value={this.userPenScore}
+                                        name="userPenScore"
+                                        onChange={this.props.handleMatchResultsChanges}
+                                        value={this.props.matchResults.userPenScore}
                                         className="text-center"
                                         id="stats-input"
                                         placeholder="5"></Input>
@@ -116,8 +47,9 @@ class MatchResults extends Component {
                                 <Col>
                                     <Input
                                         type="number"
-                                        onChange={this.updateOppPenalties}
-                                        value={this.oppPenScore}
+                                        name="oppPenScore"
+                                        onChange={this.props.handleMatchResultsChanges}
+                                        value={this.props.matchResults.oppPenScore}
                                         className="text-center"
                                         id="stats-input"
                                         placeholder="4"></Input >
@@ -131,15 +63,17 @@ class MatchResults extends Component {
                             <Label check clearfix>
                                 <Input
                                     className="float-left"
-                                    checked={this.state.rageQuitChecked}
-                                    onChange={this.handleRageQuitCheckbox}
+                                    checked={this.props.matchResults.rageQuitChecked}
+                                    name="rageQuitChecked"
+                                    onChange={this.props.handleMatchResultsChecks}
                                     type="checkbox"/>
                                 <p>Rage Quit?</p>
-                                {this.state.rageQuitChecked && <Input
+                                {this.props.matchResults.rageQuitChecked && <Input
                                     type="number"
                                     id="stats-input"
-                                    onChange={this.updateRageQuitMinute}
-                                    value={this.rageQuitMinute}
+                                    name="rageQuitMinute"
+                                    onChange={this.props.handleMatchResultsChanges}
+                                    value={this.props.matchResults.rageQuitMinute}
                                     placeholder="What Minute?"></Input>}
                             </Label>
                         </Row>
@@ -147,8 +81,9 @@ class MatchResults extends Component {
                             <Label check>
                                 <Input
                                     type="checkbox"
-                                    checked={this.state.disconnectedFromEA}
-                                    onChange={this.handleDisconnectCheckbox}/>
+                                    name="disconnectedFromEA"
+                                    checked={this.props.matchResults.disconnectedFromEA}
+                                    onChange={this.props.handleMatchResultsChecks}/>
                                 <p>Disconnected from EA Servers?</p>
                             </Label>
                         </Row>
@@ -156,10 +91,10 @@ class MatchResults extends Component {
                         <Row>
                             <Input
                                 type="textarea"
-                                onChange={this.updateGeneralNotes}
+                                onChange={this.props.handleMatchResultsChanges}
                                 className="general-notes"
-                                name="match-general-notes"
-                                value={this.matchGeneralNotes}
+                                name="matchGeneralNotes"
+                                value={this.props.matchResults.matchGeneralNotes}
                                 placeholder="General Notes on the game can go here.."/>
                         </Row>
 
