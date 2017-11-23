@@ -3,6 +3,7 @@ import NewMatch from "./components/new_match/NewMatch";
 import Main from './components/Main';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
+import Footer from './components/footer/Footer';
 
 class App extends Component {
 
@@ -14,6 +15,7 @@ class App extends Component {
           <Route exact path="/" component={Main}></Route>
           <Route path="/new-match" component={NewMatch}></Route>
         </Switch>
+        <Footer></Footer>
       </div>
     );
   }
