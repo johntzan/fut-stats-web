@@ -198,3 +198,7 @@ textarea.general-notes:active {
     border: none;
     color: white;
 }
+
+.modal p {
+    color: black;
+}

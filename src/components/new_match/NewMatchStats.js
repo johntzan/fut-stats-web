@@ -21,8 +21,8 @@ class NewMatchStats extends Component {
             oppCorners: true,
             userPassAccuracy: true,
             oppPassAccuracy: true
-
         }
+
         this.checkValidInput = this
             .checkValidInput
             .bind(this);
@@ -32,17 +32,18 @@ class NewMatchStats extends Component {
         let name = event.target.name;
 
         if (event.target.value.length <= 2) {
-            this.setState({[name]: true})
+            this.setState({[name]: true});
             this
                 .props
                 .handleMatchStatsChanges(event);
         } else {
+            //length longer than 2, reset stats to blank.
             const newEvent = event;
             newEvent.target.value = '';
             this
                 .props
                 .handleMatchStatsChanges(newEvent);
-            this.setState({[name]: false})
+            this.setState({[name]: false});
         }
     }
 
@@ -74,11 +75,12 @@ class NewMatchStats extends Component {
                         userValid={this.state.userShotsOnGoal}
                         oppValid={this.state.oppShotsOnGoal}
                         onChange={this.checkValidInput}></StatsInput>
-                    <StatsInput
+                    <PossessionStatsInput
                         stat="Possession"
+                        matchStats={this.props.matchStats}
                         userValid={this.state.userPossession}
                         oppValid={this.state.oppPossession}
-                        onChange={this.checkValidInput}></StatsInput>
+                        onChange={this.checkValidInput}></PossessionStatsInput>
                     <StatsInput
                         stat="Tackles"
                         userValid={this.state.userTackles}
@@ -126,6 +128,44 @@ const StatsInput = (props) => {
             <Col>
                 <Input
                     valid={props.oppValid}
+                    type="number"
+                    name={oppInput}
+                    className="text-center"
+                    onChange={props.onChange}
+                    id="stats-input"
+                    placeholder="0"></Input >
+            </Col>
+        </Row>
+    );
+};
+
+const PossessionStatsInput = (props) => {
+    const userInput = 'user' + props
+        .stat
+        .replace(/ /g, '');
+    const oppInput = 'opp' + props
+        .stat
+        .replace(/ /g, '');
+    return (
+        <Row>
+            <Col>
+                <Input
+                    valid={props.userValid}
+                    value={props.matchStats.userPossession}
+                    type="number"
+                    name={userInput}
+                    className="text-center"
+                    onChange={props.onChange}
+                    id="stats-input"
+                    placeholder="0"></Input>
+            </Col>
+            <Col>
+                <h5>{props.stat}</h5>
+            </Col>
+            <Col>
+                <Input
+                    valid={props.oppValid}
+                    value={props.matchStats.oppPossession}
                     type="number"
                     name={oppInput}
                     className="text-center"

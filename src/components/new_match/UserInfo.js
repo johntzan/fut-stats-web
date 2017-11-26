@@ -56,9 +56,7 @@ class UserInfo extends Component {
             <Container className="container-stats">
                 <h1 className="text-center">User Info</h1>
 
-                <div
-                    clearfix
-                    style={{
+                <div style={{
                     marginBottom: '10px'
                 }}>
                     <p
@@ -80,7 +78,7 @@ class UserInfo extends Component {
                     </ButtonDropdown>
                 </div>
 
-                <div className="text-center" clearfix>
+                <div className="text-center">
                     <hr className="left float-left" align="left" width="35%"/>
                     <hr className="right float-right" align="right" width="35%"/>
                     <p>or</p>

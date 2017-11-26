@@ -11,6 +11,62 @@ import {
 
 class MatchResults extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            userPenScore: true,
+            oppPenScore: true,
+            rageQuitMinute: true
+        }
+
+        this.checkValidPenaltiesInput = this
+            .checkValidPenaltiesInput
+            .bind(this);
+        this.checkValidRageQuitMinute = this
+            .checkValidRageQuitMinute
+            .bind(this);
+
+    }
+
+    checkValidPenaltiesInput(event) {
+        let name = event.target.name;
+
+        if (event.target.value.length <= 2) {
+            this.setState({[name]: true});
+            this
+                .props
+                .handleMatchResultsChanges(event);
+        } else {
+            //length longer than 2, reset stats to blank.
+            const newEvent = event;
+            newEvent.target.value = '';
+            this
+                .props
+                .handleMatchResultsChanges(newEvent);
+            this.setState({[name]: false});
+        }
+    }
+
+    checkValidRageQuitMinute(event) {
+        let name = event.target.name;
+
+        if (event.target.value.length <= 3) {
+            this.setState({[name]: true});
+            this
+                .props
+                .handleMatchResultsChanges(event);
+        } else {
+            //length longer than 3, reset stats to blank.
+            const newEvent = event;
+            newEvent.target.value = '';
+            this
+                .props
+                .handleMatchResultsChanges(newEvent);
+            this.setState({[name]: false});
+        }
+    }
+
     render() {
 
         return (
@@ -33,9 +89,10 @@ class MatchResults extends Component {
                             }}>
                                 <Col>
                                     <Input
+                                        valid={this.state.userPenScore}
                                         type="number"
                                         name="userPenScore"
-                                        onChange={this.props.handleMatchResultsChanges}
+                                        onChange={this.checkValidPenaltiesInput}
                                         value={this.props.matchResults.userPenScore}
                                         className="text-center"
                                         id="stats-input"
@@ -46,9 +103,10 @@ class MatchResults extends Component {
                                 </Col>
                                 <Col>
                                     <Input
+                                        valid={this.state.oppPenScore}
                                         type="number"
                                         name="oppPenScore"
-                                        onChange={this.props.handleMatchResultsChanges}
+                                        onChange={this.checkValidPenaltiesInput}
                                         value={this.props.matchResults.oppPenScore}
                                         className="text-center"
                                         id="stats-input"
@@ -60,7 +118,7 @@ class MatchResults extends Component {
                             style={{
                             marginBottom: '20px'
                         }}>
-                            <Label check clearfix>
+                            <Label check>
                                 <Input
                                     className="float-left"
                                     checked={this.props.matchResults.rageQuitChecked}
@@ -69,10 +127,11 @@ class MatchResults extends Component {
                                     type="checkbox"/>
                                 <p>Rage Quit?</p>
                                 {this.props.matchResults.rageQuitChecked && <Input
+                                    valid={this.state.rageQuitMinute}
                                     type="number"
                                     id="stats-input"
                                     name="rageQuitMinute"
-                                    onChange={this.props.handleMatchResultsChanges}
+                                    onChange={this.checkValidRageQuitMinute}
                                     value={this.props.matchResults.rageQuitMinute}
                                     placeholder="What Minute?"></Input>}
                             </Label>
