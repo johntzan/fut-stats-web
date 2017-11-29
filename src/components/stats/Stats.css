@@ -1,0 +1,46 @@
+h3.page-title {
+    color: white;
+    margin-top: 28px;
+    margin-bottom: 28px;
+    margin-left: 15px;
+}
+
+.card {
+    background-color: #2c3338 !important;
+    color: white;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.75);
+}
+
+.card-header {
+    text-align: left;
+    border: none;
+    color: lightgray;
+    padding: 8px 10px !important;
+}
+
+.card-footer {
+    text-align: right;
+    border: none;
+    color: rgb(121, 121, 121);
+    padding: 8px 10px !important;
+}
+
+.card.games.card-body {
+    max-width: 715px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.card.games .card-title {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.125);
+    padding-bottom: 20px;
+}
+
+.card.games .games-won {
+    border-right: 2px solid rgba(0, 0, 0, 0.125);
+}
