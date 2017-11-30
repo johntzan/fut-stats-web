@@ -5,13 +5,16 @@ import Main from './components/Main';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
 import Footer from './components/footer/Footer';
+import HeadRoom from 'react-headroom';
 
 class App extends Component {
 
   render() {
     return (
       <div>
-        <h3 className="title-bar text-center">FUT STATS</h3>
+        <HeadRoom>
+          <h3 className="title-bar text-center">FUT STATS</h3>
+        </HeadRoom>
         <Switch>
           <Route exact path="/" component={Main}></Route>
           <Route path="/new-match" component={NewMatch}></Route>

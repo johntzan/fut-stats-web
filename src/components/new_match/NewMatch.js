@@ -11,10 +11,11 @@ import {
     Modal,
     ModalHeader,
     ModalBody,
-    ModalFooter
+    ModalFooter,
+    Navbar,
+    NavbarBrand
 } from 'reactstrap';
 import './NewMatch.css';
-import {Link} from 'react-router-dom';
 import MdArrowBack from 'react-icons/lib/md/arrow-back';
 import startCase from 'lodash/startCase';
 
@@ -350,16 +351,15 @@ class NewMatch extends Component {
     render() {
         return (
             <Container className="container-main">
-                <Row>
-                    <Link
-                        to="/"
-                        style={{
-                        display: 'inline-flex'
-                    }}>
-                        <Button size="lg" className="back-btn float-left"><MdArrowBack/></Button>
-                    </Link>
-                    <h3 className="page-title">Create New Match</h3>
-                </Row>
+                <Navbar xs="12" color="transparent" dark expand="md">
+                    <Button
+                        onClick={this.props.history.goBack}
+                        size="lg"
+                        className="back-btn float-left"><MdArrowBack/></Button>
+                    <NavbarBrand >
+                        <h3 className="page-title">Create New Match</h3>
+                    </NavbarBrand>
+                </Navbar>
                 <Row>
                     <Col lg="6" xs="12">
                         <UserInfo

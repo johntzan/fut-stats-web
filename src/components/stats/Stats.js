@@ -9,18 +9,135 @@ import {
     CardFooter,
     CardBody,
     CardTitle,
-    CardText
+    Collapse,
+    Navbar,
+    NavbarToggler,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink
 } from "reactstrap";
 import './Stats.css';
 import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import MdArrowDropUp from 'react-icons/lib/md/arrow-drop-up';
+import {
+    PieChart,
+    Pie,
+    Tooltip,
+    ResponsiveContainer,
+    Cell,
+    Label,
+    Legend
+} from 'recharts';
+import {Link} from 'react-router-dom';
+
+const data = [
+    {
+        name: 'You',
+        value: 55
+    }, {
+        name: 'Opponent',
+        value: 45
+    }
+];
+
+const goalsData = [
+    {
+        name: 'You',
+        value: 345
+    }, {
+        name: 'Opponent',
+        value: 32
+    }
+];
+const COLORS = ['#32B200', '#374650'];
+
 class Stats extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.toggle = this
+            .toggle
+            .bind(this);
+
+        this.setActiveStatTab = this
+            .setActiveStatTab
+            .bind(this);
+
+        this.state = {
+            isOpen: false,
+            currentActive: true,
+            allActive: false
+        };
+    }
+    toggle() {
+        this.setState({
+            isOpen: !this.state.isOpen
+        });
+    }
+
+    setActiveStatTab(event) {
+        if (event.target.name === 'current') {
+            this.setState({
+                ...this.state,
+                currentActive: true,
+                allActive: false
+            })
+            this.getCurrentStats();
+        } else if (event.target.name === 'all') {
+            this.setState({
+                ...this.state,
+                currentActive: false,
+                allActive: true
+            });
+            this.getAllStats();
+        }
+    }
+
+    getAllStats() {}
+
+    getCurrentStats() {}
+
+    componentDidMount() {}
     render() {
         return (
             <Container className="container-main">
-                <Row>
-                    <h3 className="page-title">Weekend League</h3>
-                </Row>
+                <Navbar xs="12" color="transparent" dark expand="md">
+                    <NavbarToggler onClick={this.toggle}/>
+                    <NavbarBrand>
+                        <h3 className="page-title">Weekend League</h3>
+                    </NavbarBrand>
+                    <Collapse isOpen={this.state.isOpen} navbar>
+                        <Nav className="ml-auto" navbar>
+                            <NavItem>
+                                <Link to="/new-match">
+                                    <Button color="primary" size="sm">Start New Game</Button>
+                                </Link>
+                            </NavItem>
+                            <NavItem>
+                                <Button color="success" size="sm">Save</Button>
+                            </NavItem>
+                            <NavItem>
+                                <Button color="danger" size="sm">Delete</Button>
+                            </NavItem>
+                        </Nav>
+                    </Collapse>
+                </Navbar>
+                <Nav tabs>
+                    <NavItem>
+                        <NavLink
+                            onClick={this.setActiveStatTab}
+                            name="current"
+                            active={this.state.currentActive}>Show Current</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            onClick={this.setActiveStatTab}
+                            name="all"
+                            active={this.state.allActive}>Show All</NavLink>
+                    </NavItem>
+                </Nav>
 
                 <Row>
                     <Col xs="12">
@@ -28,27 +145,27 @@ class Stats extends Component {
                             <CardTitle className="text-center">
                                 39<br/>Games Left
                             </CardTitle>
-                            <CardText>
-                                <Row>
-                                    <Col xs="6" className="text-center games-won">
-                                        <h4>1<br/>Games Won</h4>
-                                    </Col>
-                                    <Col xs="6" className="text-center games-played">
-                                        <h4>1<br/>Games Played</h4>
-                                    </Col>
-                                </Row>
-                            </CardText>
+                            <Row>
+                                <Col xs="6" className="text-center games-won">
+                                    <h4>1<br/>Games Won</h4>
+                                </Col>
+                                <Col xs="6" className="text-center games-played">
+                                    <h4>1<br/>Games Played</h4>
+                                </Col>
+                            </Row>
                         </Card>
                     </Col>
                 </Row>
 
                 <Row>
+
                     <StatsBox
                         header="Avg. Goals"
                         user={3.1}
                         opp={'(' + 2.4 + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
+
                     <StatsBox
                         header="Avg. Shots"
                         user={8.1}
@@ -61,18 +178,60 @@ class Stats extends Component {
                         opp={'(' + 3.4 + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
-                    <StatsBox
-                        header="Possession"
-                        user={51.02}
-                        opp={'(' + 48.98 + ')'}
-                        showDiff={true}
-                        footer='(Against)'></StatsBox>
+
                     <StatsBox
                         header="Goals/Shot Ratio"
                         user={0.43}
                         opp={'(' + 0.40 + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
+
+                    <Col xs="12" md="6">
+                        <Card id="card-goals-diff">
+                            <CardHeader>
+                                <h5>Goals Difference</h5>
+                            </CardHeader>
+                            <CardBody>
+                                <ResponsiveContainer width='100%' height={275}>
+                                    <PieChart>
+                                        <Pie
+                                            data={goalsData}
+                                            dataKey={'value'}
+                                            labelLine={true}
+                                            innerRadius={70}
+                                            label
+                                            outerRadius={100}>
+                                            {data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)}
+                                            <Label position="center">+311</Label>
+
+                                        </Pie>
+                                        <Tooltip></Tooltip>
+                                        <Legend/>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardBody>
+                        </Card>
+                    </Col>
+
+                    <Col xs="12" md="6">
+                        <Card id="card-possession">
+                            <CardHeader>
+                                <h5>Possession</h5>
+                            </CardHeader>
+                            <CardBody>
+                                <ResponsiveContainer width='100%' height={275}>
+                                    <PieChart>
+                                        <Pie data={data} dataKey={'value'} innerRadius={70} outerRadius={100}>
+                                            {data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)}
+                                            <Label position="center">55%</Label>
+                                        </Pie>
+                                        <Tooltip></Tooltip>
+                                        <Legend/>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardBody>
+                        </Card>
+                    </Col>
                     <StatsBox
                         header="Avg. Pass Accuracy"
                         user={84.19}
@@ -137,7 +296,6 @@ class Stats extends Component {
                             </CardBody>
                         </Card>
                     </Col>
-
                 </Row>
             </Container>
         );
