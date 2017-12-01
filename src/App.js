@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import NewMatch from "./components/new_match/NewMatch";
 import Stats from './components/stats/Stats';
+import ViewGames from './components/view_games/ViewGames';
 import Main from './components/Main';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
@@ -19,6 +20,7 @@ class App extends Component {
           <Route exact path="/" component={Main}></Route>
           <Route path="/new-match" component={NewMatch}></Route>
           <Route path="/my-stats" component={Stats}></Route>
+          <Route path="/view-games" component={ViewGames}></Route>
         </Switch>
         <Footer></Footer>
       </div>

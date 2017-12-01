@@ -20,6 +20,14 @@ import {
 import './Stats.css';
 import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import MdArrowDropUp from 'react-icons/lib/md/arrow-drop-up';
+import MdChevronRight from 'react-icons/lib/md/chevron-right';
+import MdSave from 'react-icons/lib/md/save';
+import MdDelete from 'react-icons/lib/md/delete';
+import MdAdd from 'react-icons/lib/md/add';
+
+import weekendLeague from '../../helpers/test-data.js';
+import * as StatUtils from '../../helpers/stats-helper.js';
+
 import {
     PieChart,
     Pie,
@@ -31,27 +39,7 @@ import {
 } from 'recharts';
 import {Link} from 'react-router-dom';
 
-const data = [
-    {
-        name: 'You',
-        value: 55
-    }, {
-        name: 'Opponent',
-        value: 45
-    }
-];
-
-const goalsData = [
-    {
-        name: 'You',
-        value: 345
-    }, {
-        name: 'Opponent',
-        value: 32
-    }
-];
 const COLORS = ['#32B200', '#374650'];
-
 class Stats extends Component {
 
     constructor(props) {
@@ -65,16 +53,30 @@ class Stats extends Component {
             .setActiveStatTab
             .bind(this);
 
+        this.viewGames = this
+            .viewGames
+            .bind(this);
+
         this.state = {
             isOpen: false,
             currentActive: true,
-            allActive: false
+            allActive: false,
+            currentWL: JSON.parse(localStorage.getItem('currentWL'))
         };
+
     }
+
     toggle() {
         this.setState({
             isOpen: !this.state.isOpen
         });
+    }
+
+    viewGames() {
+        this
+            .props
+            .history
+            .push('/view-games');
     }
 
     setActiveStatTab(event) {
@@ -99,8 +101,44 @@ class Stats extends Component {
 
     getCurrentStats() {}
 
-    componentDidMount() {}
+    componentDidMount() {
+        console.log(weekendLeague);
+        localStorage.setItem('currentWL', JSON.stringify(weekendLeague));
+    }
     render() {
+
+        let data = [];
+        if (this.state.currentActive) {
+            data = this.state.currentWL;
+        } else if (this.state.allActive) {
+            data = this.state.allWL;
+        }
+
+        const possessionData = [
+            {
+                name: 'You',
+                value: StatUtils.getUserAvgPossession(data)
+            }, {
+                name: 'Opponent',
+                value: StatUtils.getOppAvgPossession(data)
+            }
+        ];
+
+        const goalsData = [
+            {
+                name: 'You',
+                value: StatUtils.getUserTotalGoals(data)
+            }, {
+                name: 'Opponent',
+                value: StatUtils.getOppTotalGoals(data)
+            }
+        ];
+
+        let goalsDiff = StatUtils.getUserTotalGoals(data) - StatUtils.getOppTotalGoals(data);
+        if (goalsDiff > 0) {
+            goalsDiff = '+' + goalsDiff;
+        }
+
         return (
             <Container className="container-main">
                 <Navbar xs="12" color="transparent" dark expand="md">
@@ -112,19 +150,24 @@ class Stats extends Component {
                         <Nav className="ml-auto" navbar>
                             <NavItem>
                                 <Link to="/new-match">
-                                    <Button color="primary" size="sm">Start New Game</Button>
+                                    <Button color="primary" size="sm">Start New Game&nbsp;<MdAdd></MdAdd>
+                                    </Button>
                                 </Link>
                             </NavItem>
                             <NavItem>
-                                <Button color="success" size="sm">Save</Button>
+                                <Button color="success" size="sm">
+                                    Save&nbsp;<MdSave></MdSave>
+                                </Button>
                             </NavItem>
                             <NavItem>
-                                <Button color="danger" size="sm">Delete</Button>
+                                <Button color="danger" size="sm">
+                                    Delete&nbsp;<MdDelete></MdDelete>
+                                </Button>
                             </NavItem>
                         </Nav>
                     </Collapse>
                 </Navbar>
-                <Nav tabs>
+                <Nav tabs justified>
                     <NavItem>
                         <NavLink
                             onClick={this.setActiveStatTab}
@@ -143,14 +186,18 @@ class Stats extends Component {
                     <Col xs="12">
                         <Card body className="games">
                             <CardTitle className="text-center">
-                                39<br/>Games Left
+                                {data !== undefined
+                                    ? 40 - data.length
+                                    : 40}<br/>Games Left
                             </CardTitle>
                             <Row>
                                 <Col xs="6" className="text-center games-won">
-                                    <h4>1<br/>Games Won</h4>
+                                    <h4>{StatUtils.getUserGamesWon(data)}<br/>Games Won</h4>
                                 </Col>
-                                <Col xs="6" className="text-center games-played">
-                                    <h4>1<br/>Games Played</h4>
+                                <Col xs="6" onClick={this.viewGames} className="text-center games-played">
+                                    <h4>{data !== undefined
+                                            ? data.length
+                                            : 0}<br/>Games Played</h4>
                                 </Col>
                             </Row>
                         </Card>
@@ -158,28 +205,39 @@ class Stats extends Component {
                 </Row>
 
                 <Row>
-
                     <StatsBox
+                        lg="3"
+                        md="6"
+                        xs="12"
                         header="Avg. Goals"
-                        user={3.1}
-                        opp={'(' + 2.4 + ')'}
+                        user={StatUtils.getUserAvgGoals(data)}
+                        opp={'(' + StatUtils.getOppAvgGoals(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
                     <StatsBox
+                        lg="3"
+                        md="6"
+                        xs="12"
                         header="Avg. Shots"
-                        user={8.1}
-                        opp={'(' + 7.4 + ')'}
+                        user={StatUtils.getUserAvgShots(data)}
+                        opp={'(' + StatUtils.getOppAvgShots(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
+                        lg="3"
+                        md="6"
+                        xs="12"
                         header="Avg. Shots on Target"
-                        user={5.2}
-                        opp={'(' + 3.4 + ')'}
+                        user={StatUtils.getUserAvgShotsOnGoal(data)}
+                        opp={'(' + StatUtils.getOppAvgShotsOnGoal(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
                     <StatsBox
+                        lg="3"
+                        md="6"
+                        xs="12"
                         header="Goals/Shot Ratio"
                         user={0.43}
                         opp={'(' + 0.40 + ')'}
@@ -202,7 +260,7 @@ class Stats extends Component {
                                             label
                                             outerRadius={100}>
                                             {data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)}
-                                            <Label position="center">+311</Label>
+                                            <Label position="center">{goalsDiff}</Label>
 
                                         </Pie>
                                         <Tooltip></Tooltip>
@@ -221,9 +279,9 @@ class Stats extends Component {
                             <CardBody>
                                 <ResponsiveContainer width='100%' height={275}>
                                     <PieChart>
-                                        <Pie data={data} dataKey={'value'} innerRadius={70} outerRadius={100}>
+                                        <Pie data={possessionData} dataKey={'value'} innerRadius={70} outerRadius={100}>
                                             {data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)}
-                                            <Label position="center">55%</Label>
+                                            <Label position="center">{StatUtils.getUserAvgPossession(data) + '%'}</Label>
                                         </Pie>
                                         <Tooltip></Tooltip>
                                         <Legend/>
@@ -233,69 +291,104 @@ class Stats extends Component {
                         </Card>
                     </Col>
                     <StatsBox
+                        lg="4"
+                        md="12"
+                        xs="12"
                         header="Avg. Pass Accuracy"
                         user={84.19}
                         opp={'(' + 85.36 + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
+                        lg="4"
+                        md="6"
+                        xs="12"
                         header="Avg. Tackles"
                         user={11.02}
                         opp={'(' + 8.47 + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
+                        lg="4"
+                        md="6"
+                        xs="12"
                         header="Avg. Corners"
                         user={3}
                         opp={'(' + 1 + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
+
                     <StatsBox
-                        header="Opponent Team Rating"
-                        user={''}
-                        showDiff={false}
-                        opp={82.44}
-                        footer='Avg.'></StatsBox>
-                    <StatsBox
+                        lg="4"
+                        md="12"
+                        xs="12"
                         header="# Games in Penalties"
                         user={5}
                         opp={'(' + 5 + ')'}
                         footer='(Games Lost)'></StatsBox>
-                    <StatsBox header="Disconnects" user={0} opp={''} footer='Total'></StatsBox>
-                    <StatsBox header="Rage Quits" user={3} opp={''} footer='Total'></StatsBox>
-                    <Col xs="12" md="6" lg="3">
-                        <Card>
-                            <CardHeader>
-                                <h5>Top 5 Formations</h5>
-                            </CardHeader>
-                            <CardBody>
-                                <ol>
-                                    <li>4-1-2-1-2 - (22)</li>
-                                    <li>4-2-3-1 - (10)</li>
-                                    <li>4-3-2-1 - (6)</li>
-                                    <li>4-4-2 - (8)</li>
-                                    <li>4-4-1-1 - (2)</li>
-                                </ol>
-                            </CardBody>
-                        </Card>
+                    <StatsBox
+                        lg="4"
+                        md="6"
+                        xs="12"
+                        header="Disconnects"
+                        user={0}
+                        opp={''}
+                        footer='Total'></StatsBox>
+                    <StatsBox
+                        lg="4"
+                        md="6"
+                        xs="12"
+                        header="Rage Quits"
+                        user={3}
+                        opp={''}
+                        footer='Total'></StatsBox>
+                    <Col xs="12">
+                        <Row>
+                            <Col xs="12" md="4" lg="4">
+                                <Card>
+                                    <CardHeader>
+                                        <h5>Top 5 Formations</h5>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <ol>
+                                            <li>4-1-2-1-2 - (22)</li>
+                                            <li>4-2-3-1 - (10)</li>
+                                            <li>4-3-2-1 - (6)</li>
+                                            <li>4-4-2 - (8)</li>
+                                            <li>4-4-1-1 - (2)</li>
+                                        </ol>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+
+                            <StatsBox
+                                lg="4"
+                                md="4"
+                                xs="12"
+                                header="Opponent Team Rating"
+                                user={''}
+                                opp={'82.44'}
+                                footer='Avg.'></StatsBox>
+
+                            <Col xs="12" md="4" lg="4">
+                                <Card>
+                                    <CardHeader>
+                                        <h5>Top Squad Types</h5>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <ol>
+                                            <li>EPL - (22)</li>
+                                            <li>Serie A - (10)</li>
+                                            <li>La Liga - (6)</li>
+                                            <li>Bundes - (8)</li>
+                                            <li>Ligue 1 - (2)</li>
+                                        </ol>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
                     </Col>
 
-                    <Col xs="12" md="6" lg="3">
-                        <Card>
-                            <CardHeader>
-                                <h5>Top Squad Types</h5>
-                            </CardHeader>
-                            <CardBody>
-                                <ol>
-                                    <li>EPL - (22)</li>
-                                    <li>Serie A - (10)</li>
-                                    <li>La Liga - (6)</li>
-                                    <li>Bundes - (8)</li>
-                                    <li>Ligue 1 - (2)</li>
-                                </ol>
-                            </CardBody>
-                        </Card>
-                    </Col>
                 </Row>
             </Container>
         );
@@ -323,7 +416,7 @@ const StatsBox = (props) => {
         }
     }
     return (
-        <Col xs="12" md="6" lg="3">
+        <Col xs={props.xs} md={props.md} lg={props.lg}>
             <Card>
                 <CardHeader>
                     <h5>{props.header}</h5>

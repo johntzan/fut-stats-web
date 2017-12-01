@@ -174,12 +174,6 @@ button.back-btn:hover {
     background-color: transparent;
 }
 
-h3.page-title {
-    color: white;
-    margin-top: 28px;
-    margin-bottom: 28px;
-}
-
 button.save-btn {
     background-color: hsl(352, 92%, 31%);
     border: none;

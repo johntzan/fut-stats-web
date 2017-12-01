@@ -45,7 +45,8 @@ class NewMatch extends Component {
                 disconnectedFromEA: false,
                 matchGeneralNotes: "",
                 userPenScore: "",
-                oppPenScore: ""
+                oppPenScore: "",
+                userWon: false
             },
             matchStats: {
                 userGoals: '',
@@ -251,6 +252,9 @@ class NewMatch extends Component {
             const weekendLeague = {};
             Object.assign(weekendLeague, this.state.userInfo, this.state.oppInfo, this.state.matchStats, this.state.matchResults);
             console.log(weekendLeague);
+            let currentWL = JSON.parse(localStorage.getItem('currentWL'))
+            currentWL.push(weekendLeague);
+            localStorage.setItem('currentWL', currentWL);
         } else {
             this.toggleSaveModal();
         }
@@ -311,8 +315,26 @@ class NewMatch extends Component {
 
     validateMatchResults() {
 
+        if (this.state.matchStats.userGoals > this.state.matchStats.oppGoals) {
+            console.log('User Won!')
+            const newMatchResults = {
+                ...this.state.matchResults,
+                userWon: true
+            };
+
+            this.setState({matchResults: newMatchResults});
+        }
+
         //Goals validation, checking for ties and penalties score ties
         if (this.state.matchStats.userGoals === this.state.matchStats.oppGoals) {
+
+            if (this.state.matchResults.userPenScore > this.state.matchResults.oppPenScore) {
+                const newMatchResults = {
+                    ...this.state.matchResults,
+                    userWon: true
+                };
+                this.setState({matchResults: newMatchResults});
+            }
 
             if (this.state.matchResults.userPenScore.length < 1) {
                 this

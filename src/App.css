@@ -10,6 +10,12 @@ h3.title-bar {
     z-index: 999;
 }
 
+h3.page-title {
+    color: white;
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
 .container {
     /* background-color: #2c3338; */
     padding: 25px;
@@ -18,7 +24,7 @@ h3.title-bar {
 
 .container-main {
     margin-top: 100px;
-    background-color: #2c3338;
+    background-color: #242A2E;
 }
 
 .example-content {
