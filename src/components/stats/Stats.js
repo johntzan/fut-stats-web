@@ -20,7 +20,6 @@ import {
 import './Stats.css';
 import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import MdArrowDropUp from 'react-icons/lib/md/arrow-drop-up';
-import MdChevronRight from 'react-icons/lib/md/chevron-right';
 import MdSave from 'react-icons/lib/md/save';
 import MdDelete from 'react-icons/lib/md/delete';
 import MdAdd from 'react-icons/lib/md/add';
@@ -35,7 +34,11 @@ import {
     ResponsiveContainer,
     Cell,
     Label,
-    Legend
+    Legend,
+    BarChart,
+    XAxis,
+    YAxis,
+    Bar
 } from 'recharts';
 import {Link} from 'react-router-dom';
 
@@ -105,13 +108,17 @@ class Stats extends Component {
         console.log(weekendLeague);
         localStorage.setItem('currentWL', JSON.stringify(weekendLeague));
     }
+
+    displayTop5Formations(data) {}
+
     render() {
 
         let data = [];
         if (this.state.currentActive) {
             data = this.state.currentWL;
         } else if (this.state.allActive) {
-            data = this.state.allWL;
+            // TODO:change to allWL
+            data = this.state.currentWL;
         }
 
         const possessionData = [
@@ -239,8 +246,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Goals/Shot Ratio"
-                        user={0.43}
-                        opp={'(' + 0.40 + ')'}
+                        user={StatUtils.getUserAvgGoalPerShot(data)}
+                        opp={'(' + StatUtils.getOppAvgGoalPerShot(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
@@ -295,8 +302,8 @@ class Stats extends Component {
                         md="12"
                         xs="12"
                         header="Avg. Pass Accuracy"
-                        user={84.19}
-                        opp={'(' + 85.36 + ')'}
+                        user={StatUtils.getUserAvgPassAccuracy(data)}
+                        opp={'(' + StatUtils.getOppAvgPassAccuracy(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
@@ -304,8 +311,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Avg. Tackles"
-                        user={11.02}
-                        opp={'(' + 8.47 + ')'}
+                        user={StatUtils.getUserAvgTackles(data)}
+                        opp={'(' + StatUtils.getOppAvgTackles(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
@@ -313,8 +320,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Avg. Corners"
-                        user={3}
-                        opp={'(' + 1 + ')'}
+                        user={StatUtils.getUserAvgCorners(data)}
+                        opp={'(' + StatUtils.getOppAvgCorners(data) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
@@ -323,15 +330,15 @@ class Stats extends Component {
                         md="12"
                         xs="12"
                         header="# Games in Penalties"
-                        user={5}
-                        opp={'(' + 5 + ')'}
+                        user={StatUtils.getPenaltiesCount(data)}
+                        opp={'(' + StatUtils.getPenaltiesLostCount(data) + ')'}
                         footer='(Games Lost)'></StatsBox>
                     <StatsBox
                         lg="4"
                         md="6"
                         xs="12"
                         header="Disconnects"
-                        user={0}
+                        user={StatUtils.getDisconnectsCount(data)}
                         opp={''}
                         footer='Total'></StatsBox>
                     <StatsBox
@@ -339,53 +346,23 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Rage Quits"
-                        user={3}
+                        user={StatUtils.getRageQuitCount(data)}
                         opp={''}
                         footer='Total'></StatsBox>
                     <Col xs="12">
                         <Row>
-                            <Col xs="12" md="4" lg="4">
-                                <Card>
-                                    <CardHeader>
-                                        <h5>Top 5 Formations</h5>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <ol>
-                                            <li>4-1-2-1-2 - (22)</li>
-                                            <li>4-2-3-1 - (10)</li>
-                                            <li>4-3-2-1 - (6)</li>
-                                            <li>4-4-2 - (8)</li>
-                                            <li>4-4-1-1 - (2)</li>
-                                        </ol>
-                                    </CardBody>
-                                </Card>
-                            </Col>
+                            <Top5Formations data={data}></Top5Formations>
+                            <Top5SquadTypes data={data}></Top5SquadTypes>
 
                             <StatsBox
-                                lg="4"
-                                md="4"
+                                lg="6"
+                                md="6"
                                 xs="12"
                                 header="Opponent Team Rating"
                                 user={''}
-                                opp={'82.44'}
+                                opp={StatUtils.getOppAvgTeamRating(data)}
                                 footer='Avg.'></StatsBox>
 
-                            <Col xs="12" md="4" lg="4">
-                                <Card>
-                                    <CardHeader>
-                                        <h5>Top Squad Types</h5>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <ol>
-                                            <li>EPL - (22)</li>
-                                            <li>Serie A - (10)</li>
-                                            <li>La Liga - (6)</li>
-                                            <li>Bundes - (8)</li>
-                                            <li>Ligue 1 - (2)</li>
-                                        </ol>
-                                    </CardBody>
-                                </Card>
-                            </Col>
                         </Row>
                     </Col>
 
@@ -394,6 +371,80 @@ class Stats extends Component {
         );
     }
 }
+
+const Top5Formations = (props) => {
+    const data = StatUtils.getTop5Formation(props.data);
+    return (
+        <Col xs="12" md="4" lg="6">
+            <Card>
+                <CardHeader>
+                    <h5>Top 5 Formations</h5>
+                </CardHeader>
+                <CardBody>
+                    <ResponsiveContainer width='100%' height={250}>
+                        <BarChart
+                            data={data}
+                            margin={{
+                            top: 30,
+                            right: 30,
+                            left: 0,
+                            bottom: 30
+                        }}>
+                            <XAxis dataKey="Formation"/>
+                            <YAxis/>
+                            <Tooltip
+                                itemStyle={{
+                                color: 'black'
+                            }}
+                                labelStyle={{
+                                color: 'black'
+                            }}/>
+                            <Bar dataKey="Count" fill="#0CA4FF" label legendType="square"></Bar>
+                            <Legend></Legend>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </CardBody>
+            </Card>
+        </Col>
+    );
+};
+
+const Top5SquadTypes = (props) => {
+    const data = StatUtils.getTop5SquadTypes(props.data);
+    return (
+        <Col xs="12" md="4" lg="6">
+            <Card>
+                <CardHeader>
+                    <h5>Top 5 Squad Types</h5>
+                </CardHeader>
+                <CardBody>
+                    <ResponsiveContainer width='100%' height={250}>
+                        <BarChart
+                            data={data}
+                            margin={{
+                            top: 30,
+                            right: 30,
+                            left: 0,
+                            bottom: 30
+                        }}>
+                            <XAxis dataKey="Squad"></XAxis>
+                            <YAxis/>
+                            <Tooltip
+                                itemStyle={{
+                                color: 'black'
+                            }}
+                                labelStyle={{
+                                color: 'black'
+                            }}/>
+                            <Bar dataKey="Count" fill="#0CA4FF" label legendType="square"></Bar>
+                            <Legend></Legend>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </CardBody>
+            </Card>
+        </Col>
+    );
+};
 
 const StatsBox = (props) => {
 
@@ -409,7 +460,7 @@ const StatsBox = (props) => {
             diffStyle = {
                 color: 'green'
             }
-        } else {
+        } else if (statsDiff < 0) {
             diffStyle = {
                 color: 'red'
             }
@@ -426,7 +477,7 @@ const StatsBox = (props) => {
                     {props.showDiff && <p style={diffStyle} className="text-center">
                         <span>{statsDiff > 0
                                 ? <MdArrowDropUp></MdArrowDropUp>
-                                : <MdArrowDropDown></MdArrowDropDown>}</span>{Math.round(statsDiff * 100) / 100}</p>}
+                                : <MdArrowDropDown></MdArrowDropDown>}</span>{(Math.round(statsDiff * 100) / 100).toFixed(2)}</p>}
                 </CardBody>
                 <CardFooter>
                     <h6>{props.footer}</h6>

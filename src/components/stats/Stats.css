@@ -69,6 +69,10 @@
     text-align: right !important;
 }
 
+svg>g.recharts-layer.recharts-bar>g.recharts-layer.recharts-label-list>text {
+    fill: white;
+}
+
 #root>div>div.container-main.container>ul {
     margin: 0.5rem 1rem;
 }

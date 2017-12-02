@@ -1,3 +1,5 @@
+import toPairs from 'lodash/toPairs';
+
 export function getUserGamesWon(weekendLeague) {
     console.log('getUserGamesWon');
     let userWins = 0;
@@ -15,7 +17,7 @@ export function getUserAvgGoals(wl) {
     wl.forEach(element => {
         userAvgGoals += Number(element.userGoals);
     });
-    return (userAvgGoals / wl.length);
+    return round((userAvgGoals / wl.length));
 }
 
 export function getOppAvgGoals(wl) {
@@ -23,7 +25,7 @@ export function getOppAvgGoals(wl) {
     wl.forEach(element => {
         oppAvgGoals += Number(element.oppGoals);
     });
-    return (oppAvgGoals / wl.length);
+    return round((oppAvgGoals / wl.length));
 }
 
 export function getUserAvgShots(wl) {
@@ -31,7 +33,7 @@ export function getUserAvgShots(wl) {
     wl.forEach(element => {
         result += Number(element.userShots);
     });
-    return (result / wl.length);
+    return round((result / wl.length));
 }
 
 export function getOppAvgShots(wl) {
@@ -39,7 +41,7 @@ export function getOppAvgShots(wl) {
     wl.forEach(element => {
         result += Number(element.oppShots);
     });
-    return (result / wl.length);
+    return round((result / wl.length));
 }
 
 export function getUserAvgShotsOnGoal(wl) {
@@ -47,7 +49,7 @@ export function getUserAvgShotsOnGoal(wl) {
     wl.forEach(element => {
         result += Number(element.userShotsOnGoal);
     });
-    return (result / wl.length);
+    return round((result / wl.length));
 }
 
 export function getOppAvgShotsOnGoal(wl) {
@@ -55,7 +57,7 @@ export function getOppAvgShotsOnGoal(wl) {
     wl.forEach(element => {
         result += Number(element.oppShotsOnGoal);
     });
-    return (result / wl.length);
+    return round((result / wl.length));
 }
 
 export function getUserTotalGoals(wl) {
@@ -79,7 +81,7 @@ export function getUserAvgPossession(wl) {
     wl.forEach(element => {
         result += Number(element.userPossession);
     });
-    return (result / wl.length);
+    return (Math.round((result / wl.length) * 100) / 100);
 }
 
 export function getOppAvgPossession(wl) {
@@ -87,5 +89,179 @@ export function getOppAvgPossession(wl) {
     wl.forEach(element => {
         result += Number(element.oppPossession);
     });
-    return (result / wl.length);
+    return (Math.round((result / wl.length) * 100) / 100);
+}
+
+export function getUserAvgGoalPerShot(wl) {
+
+    let userGoals = getUserAvgGoals(wl);
+    let userShotsOnGoal = getUserAvgShotsOnGoal(wl);
+
+    return round((userGoals / userShotsOnGoal));
+}
+
+export function getOppAvgGoalPerShot(wl) {
+
+    let oppGoals = getOppAvgGoals(wl);
+    let oppShotsOnGoal = getOppAvgShotsOnGoal(wl);
+
+    return round((oppGoals / oppShotsOnGoal));
+}
+
+export function getUserAvgPassAccuracy(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.userPassAccuracy);
+    });
+    return round((result / wl.length));
+}
+
+export function getOppAvgPassAccuracy(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.oppPassAccuracy);
+    });
+    return round((result / wl.length));
+}
+
+export function getUserAvgTackles(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.userTackles);
+    });
+    return round((result / wl.length));
+}
+
+export function getOppAvgTackles(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.oppTackles);
+    });
+    return round((result / wl.length));
+}
+
+export function getUserAvgCorners(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.userCorners);
+    });
+    return round((result / wl.length));
+}
+
+export function getOppAvgCorners(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.oppCorners);
+    });
+    return round((result / wl.length));
+}
+
+export function getPenaltiesCount(wl) {
+    let count = 0;
+    wl.forEach(element => {
+        if (element.userGoals === element.oppGoals) {
+            count += 1;
+        }
+    });
+    return (count);
+}
+
+export function getDisconnectsCount(wl) {
+    let count = 0;
+    wl.forEach(element => {
+        if (element.disconnectedFromEA) {
+            count += 1;
+        }
+    });
+    return (count);
+}
+
+export function getRageQuitCount(wl) {
+    let count = 0;
+    wl.forEach(element => {
+        if (element.rageQuitChecked) {
+            count += 1;
+        }
+    });
+    return (count);
+}
+
+export function getPenaltiesLostCount(wl) {
+    let count = 0;
+    wl.forEach(element => {
+        if (element.userGoals === element.oppGoals) {
+            if (element.userPenScore < element.oppPenScore) {
+                count += 1;
+            }
+        }
+    });
+    return (count);
+}
+
+export function getOppAvgTeamRating(wl) {
+    let result = 0;
+    wl.forEach(element => {
+        result += Number(element.oppTeamRating);
+    });
+    return round((result / wl.length));
+}
+
+export function getTop5Formation(wl) {
+
+    let counts = {};
+    wl.forEach(element => {
+        //checks if counts object contains element already, if so, +1, else = 1
+        counts[element.oppFormationSelected] = counts[element.oppFormationSelected]
+            ? counts[element.oppFormationSelected] + 1
+            : 1;
+    });
+
+    let arr = toPairs(counts);
+    // sort in descending order by count
+    arr = arr.sort(function (a, b) {
+        return b[1] - a[1];
+    });
+
+    let result = arr
+        .slice(0, 4)
+        .map(function (x, index) {
+            return {Formation: x[0], Count: x[1]};
+
+        });
+
+    console.log(result)
+
+    return (result);
+
+}
+
+export function getTop5SquadTypes(wl) {
+    let counts = {};
+    wl.forEach(element => {
+        element
+            .oppSquad
+            .forEach(squad => {
+                counts[squad] = counts[squad]
+                    ? counts[squad] + 1
+                    : 1;
+            });
+    });
+    let arr = toPairs(counts);
+    // sort in descending order by count
+    arr = arr.sort(function (a, b) {
+        return b[1] - a[1];
+    });
+
+    let result = arr
+        .slice(0, 4)
+        .map(function (x, index) {
+            return {Squad: x[0], Count: x[1]};
+
+        });
+
+    return (result);
+}
+
+function round(number) {
+    return (Math.round(number * 100) / 100).toFixed(2);
 }

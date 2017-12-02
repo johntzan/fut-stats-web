@@ -22,6 +22,10 @@ class ViewGames extends Component {
                         <h3 className="page-title">View Games</h3>
                     </NavbarBrand>
                 </Navbar>
+
+                <Row>
+                    <Col></Col>
+                </Row>
             </Container>
         );
     }
