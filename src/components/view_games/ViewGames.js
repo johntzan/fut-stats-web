@@ -10,6 +10,12 @@ import {
 } from 'reactstrap';
 import MdArrowBack from 'react-icons/lib/md/arrow-back';
 class ViewGames extends Component {
+
+    constructor(props) {
+        super(props);
+
+    }
+
     render() {
         return (
             <Container className="container-main">

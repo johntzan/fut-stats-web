@@ -62,9 +62,9 @@ class Stats extends Component {
 
         this.state = {
             isOpen: false,
-            currentActive: true,
-            allActive: false,
-            currentWL: JSON.parse(localStorage.getItem('currentWL'))
+            activeTab: 'current',
+            currentWL: [],
+            allWL: []
         };
 
     }
@@ -86,15 +86,13 @@ class Stats extends Component {
         if (event.target.name === 'current') {
             this.setState({
                 ...this.state,
-                currentActive: true,
-                allActive: false
+                activeTab: 'current'
             })
             this.getCurrentStats();
         } else if (event.target.name === 'all') {
             this.setState({
                 ...this.state,
-                currentActive: false,
-                allActive: true
+                activeTab: 'all'
             });
             this.getAllStats();
         }
@@ -107,41 +105,41 @@ class Stats extends Component {
     componentDidMount() {
         console.log(weekendLeague);
         localStorage.setItem('currentWL', JSON.stringify(weekendLeague));
+        this.setState({
+            currentWL: JSON.parse(localStorage.getItem('currentWL'))
+        })
     }
-
-    displayTop5Formations(data) {}
 
     render() {
 
         let data = [];
-        if (this.state.currentActive) {
+        if (this.state.activeTab === 'current') {
             data = this.state.currentWL;
-        } else if (this.state.allActive) {
-            // TODO:change to allWL
-            data = this.state.currentWL;
+        } else if (this.state.activeTab === 'all') {
+            data = this.state.allWL;
         }
 
         const possessionData = [
             {
                 name: 'You',
-                value: StatUtils.getUserAvgPossession(data)
+                value: StatUtils.getAvgPossession(data, 'userPossession', this.state.activeTab)
             }, {
                 name: 'Opponent',
-                value: StatUtils.getOppAvgPossession(data)
+                value: StatUtils.getAvgPossession(data, 'oppPossession', this.state.activeTab)
             }
         ];
 
         const goalsData = [
             {
                 name: 'You',
-                value: StatUtils.getUserTotalGoals(data)
+                value: StatUtils.getTotalsStat(data, 'userGoals', this.state.activeTab)
             }, {
                 name: 'Opponent',
-                value: StatUtils.getOppTotalGoals(data)
+                value: StatUtils.getTotalsStat(data, 'oppGoals', this.state.activeTab)
             }
         ];
 
-        let goalsDiff = StatUtils.getUserTotalGoals(data) - StatUtils.getOppTotalGoals(data);
+        let goalsDiff = goalsData[0].value - goalsData[1].value;
         if (goalsDiff > 0) {
             goalsDiff = '+' + goalsDiff;
         }
@@ -179,35 +177,52 @@ class Stats extends Component {
                         <NavLink
                             onClick={this.setActiveStatTab}
                             name="current"
-                            active={this.state.currentActive}>Show Current</NavLink>
+                            active={this.state.activeTab === 'current'}>Show Current</NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink
                             onClick={this.setActiveStatTab}
                             name="all"
-                            active={this.state.allActive}>Show All</NavLink>
+                            active={this.state.activeTab === 'all'}>Show All</NavLink>
                     </NavItem>
                 </Nav>
 
                 <Row>
                     <Col xs="12">
-                        <Card body className="games">
+                        {this.state.activeTab === 'current' && <Card body className="games">
                             <CardTitle className="text-center">
-                                {data !== undefined
+                                {data !== undefined && data !== null
                                     ? 40 - data.length
                                     : 40}<br/>Games Left
                             </CardTitle>
                             <Row>
                                 <Col xs="6" className="text-center games-won">
-                                    <h4>{StatUtils.getUserGamesWon(data)}<br/>Games Won</h4>
+                                    <h4>{StatUtils.getUserGamesWon(data, this.state.activeTab)}<br/>Games Won</h4>
                                 </Col>
                                 <Col xs="6" onClick={this.viewGames} className="text-center games-played">
-                                    <h4>{data !== undefined
+                                    <h4>{data !== undefined && data !== null
                                             ? data.length
                                             : 0}<br/>Games Played</h4>
                                 </Col>
                             </Row>
-                        </Card>
+                        </Card>}
+
+                        {this.state.activeTab === 'all' && <Card body className="games">
+                            <CardTitle className="text-center wls-played">
+                                {data !== undefined && data !== null
+                                    ? data.length
+                                    : 0}<br/>Weekend Leagues Played
+                            </CardTitle>
+                            <Row>
+                                <Col xs="6" className="text-center games-won">
+                                    <h4>{StatUtils.getUserGamesWon(data, this.state.activeTab)}<br/>Games Won</h4>
+                                </Col>
+                                <Col xs="6" onClick={this.viewGames} className="text-center games-played">
+                                    <h4>{StatUtils.getGamesPlayedForAll(data)}<br/>Games Played</h4>
+                                </Col>
+                            </Row>
+                        </Card>}
+
                     </Col>
                 </Row>
 
@@ -217,18 +232,17 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Avg. Goals"
-                        user={StatUtils.getUserAvgGoals(data)}
-                        opp={'(' + StatUtils.getOppAvgGoals(data) + ')'}
+                        user={StatUtils.getAvgStat(data, 'userGoals', this.state.activeTab)}
+                        opp={'(' + StatUtils.getAvgStat(data, 'oppGoals', this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
-
                     <StatsBox
                         lg="3"
                         md="6"
                         xs="12"
                         header="Avg. Shots"
-                        user={StatUtils.getUserAvgShots(data)}
-                        opp={'(' + StatUtils.getOppAvgShots(data) + ')'}
+                        user={StatUtils.getAvgStat(data, 'userShots', this.state.activeTab)}
+                        opp={'(' + StatUtils.getAvgStat(data, 'oppShots', this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
@@ -236,8 +250,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Avg. Shots on Target"
-                        user={StatUtils.getUserAvgShotsOnGoal(data)}
-                        opp={'(' + StatUtils.getOppAvgShotsOnGoal(data) + ')'}
+                        user={StatUtils.getAvgStat(data, 'userShotsOnGoal', this.state.activeTab)}
+                        opp={'(' + StatUtils.getAvgStat(data, 'oppShotsOnGoal', this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
@@ -246,8 +260,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Goals/Shot Ratio"
-                        user={StatUtils.getUserAvgGoalPerShot(data)}
-                        opp={'(' + StatUtils.getOppAvgGoalPerShot(data) + ')'}
+                        user={StatUtils.getUserAvgGoalPerShot(data, this.state.activeTab)}
+                        opp={'(' + StatUtils.getOppAvgGoalPerShot(data, this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
@@ -288,8 +302,9 @@ class Stats extends Component {
                                     <PieChart>
                                         <Pie data={possessionData} dataKey={'value'} innerRadius={70} outerRadius={100}>
                                             {data.map((entry, index) => <Cell key={index} fill={COLORS[index % COLORS.length]}/>)}
-                                            <Label position="center">{StatUtils.getUserAvgPossession(data) + '%'}</Label>
+                                            <Label position="center">{StatUtils.getAvgPossession(data, 'userPossession', this.state.activeTab) + '%'}</Label>
                                         </Pie>
+                                        result result
                                         <Tooltip></Tooltip>
                                         <Legend/>
                                     </PieChart>
@@ -302,8 +317,8 @@ class Stats extends Component {
                         md="12"
                         xs="12"
                         header="Avg. Pass Accuracy"
-                        user={StatUtils.getUserAvgPassAccuracy(data)}
-                        opp={'(' + StatUtils.getOppAvgPassAccuracy(data) + ')'}
+                        user={StatUtils.getAvgStat(data, 'userPassAccuracy', this.state.activeTab)}
+                        opp={'(' + StatUtils.getAvgStat(data, 'oppPassAccuracy', this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
@@ -311,8 +326,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Avg. Tackles"
-                        user={StatUtils.getUserAvgTackles(data)}
-                        opp={'(' + StatUtils.getOppAvgTackles(data) + ')'}
+                        user={StatUtils.getAvgStat(data, 'userTackles', this.state.activeTab)}
+                        opp={'(' + StatUtils.getAvgStat(data, 'oppTackles', this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
                     <StatsBox
@@ -320,8 +335,8 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Avg. Corners"
-                        user={StatUtils.getUserAvgCorners(data)}
-                        opp={'(' + StatUtils.getOppAvgCorners(data) + ')'}
+                        user={StatUtils.getAvgStat(data, 'userCorners', this.state.activeTab)}
+                        opp={'(' + StatUtils.getAvgStat(data, 'oppCorners', this.state.activeTab) + ')'}
                         showDiff={true}
                         footer='(Against)'></StatsBox>
 
@@ -330,15 +345,15 @@ class Stats extends Component {
                         md="12"
                         xs="12"
                         header="# Games in Penalties"
-                        user={StatUtils.getPenaltiesCount(data)}
-                        opp={'(' + StatUtils.getPenaltiesLostCount(data) + ')'}
+                        user={StatUtils.getPenaltiesCount(data, this.state.activeTab)}
+                        opp={'(' + StatUtils.getPenaltiesLostCount(data, this.state.activeTab) + ')'}
                         footer='(Games Lost)'></StatsBox>
                     <StatsBox
                         lg="4"
                         md="6"
                         xs="12"
                         header="Disconnects"
-                        user={StatUtils.getDisconnectsCount(data)}
+                        user={StatUtils.getCountOfStat(data, 'disconnectedFromEA', this.state.activeTab)}
                         opp={''}
                         footer='Total'></StatsBox>
                     <StatsBox
@@ -346,23 +361,21 @@ class Stats extends Component {
                         md="6"
                         xs="12"
                         header="Rage Quits"
-                        user={StatUtils.getRageQuitCount(data)}
+                        user={StatUtils.getCountOfStat(data, 'rageQuitChecked', this.state.activeTab)}
                         opp={''}
                         footer='Total'></StatsBox>
                     <Col xs="12">
                         <Row>
-                            <Top5Formations data={data}></Top5Formations>
-                            <Top5SquadTypes data={data}></Top5SquadTypes>
-
+                            <Top5Formations data={data} type={this.state.activeTab}></Top5Formations>
+                            <Top5SquadTypes data={data} type={this.state.activeTab}></Top5SquadTypes>
                             <StatsBox
                                 lg="6"
                                 md="6"
                                 xs="12"
                                 header="Opponent Team Rating"
                                 user={''}
-                                opp={StatUtils.getOppAvgTeamRating(data)}
+                                opp={StatUtils.getAvgStat(data, 'oppTeamRating', this.state.activeTab)}
                                 footer='Avg.'></StatsBox>
-
                         </Row>
                     </Col>
 
@@ -373,7 +386,7 @@ class Stats extends Component {
 }
 
 const Top5Formations = (props) => {
-    const data = StatUtils.getTop5Formation(props.data);
+    const data = StatUtils.getTop5Formation(props.data, props.type);
     return (
         <Col xs="12" md="4" lg="6">
             <Card>
@@ -410,7 +423,7 @@ const Top5Formations = (props) => {
 };
 
 const Top5SquadTypes = (props) => {
-    const data = StatUtils.getTop5SquadTypes(props.data);
+    const data = StatUtils.getTop5SquadTypes(props.data, props.type);
     return (
         <Col xs="12" md="4" lg="6">
             <Card>

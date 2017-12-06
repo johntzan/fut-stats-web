@@ -47,6 +47,11 @@
     cursor: pointer;
 }
 
+.card.games .wls-played:hover {
+    border: 1px solid white;
+    cursor: pointer;
+}
+
 #card-goals-diff>div.card-body>div>div.recharts-wrapper>svg>g>g>g>path {
     stroke: transparent;
 }
