@@ -209,7 +209,7 @@ export default[
         "disconnectedFromEA" : false,
         "matchGeneralNotes" : "2nd Game",
         "userPenScore" : "3",
-        "oppPenScore" : "1",
-        "userWon" : true
+        "oppPenScore" : "5",
+        "userWon" : false
     }
 ];

@@ -1,0 +1,13 @@
+.game-card:hover {
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+.game-score {
+    display: inline;
+}
+
+.search-games-input {
+    max-width: 540px;
+    margin-bottom: 15px;
+}

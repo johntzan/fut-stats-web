@@ -377,7 +377,7 @@ class NewMatch extends Component {
                     <Button
                         onClick={this.props.history.goBack}
                         size="lg"
-                        className="back-btn float-left"><MdArrowBack/></Button>
+                        className="back-btn float-left"><MdArrowBack size="24"/></Button>
                     <NavbarBrand >
                         <h3 className="page-title">Create New Match</h3>
                     </NavbarBrand>

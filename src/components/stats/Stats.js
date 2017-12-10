@@ -18,11 +18,15 @@ import {
     NavLink
 } from "reactstrap";
 import './Stats.css';
-import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
-import MdArrowDropUp from 'react-icons/lib/md/arrow-drop-up';
-import MdSave from 'react-icons/lib/md/save';
-import MdDelete from 'react-icons/lib/md/delete';
-import MdAdd from 'react-icons/lib/md/add';
+import {
+    MdArrowDropDown,
+    MdList,
+    MdAdd,
+    MdDelete,
+    MdSave,
+    MdArrowDropUp,
+    MdChevronRight
+} from 'react-icons/lib/md';
 
 import weekendLeague from '../../helpers/test-data.js';
 import * as StatUtils from '../../helpers/stats-helper.js';
@@ -79,7 +83,14 @@ class Stats extends Component {
         this
             .props
             .history
-            .push('/view-games');
+            .push({
+                pathname: '/view-games',
+                state: {
+                    activeTab: this.state.activeTab,
+                    currentWL: this.state.currentWL,
+                    allWl: this.state.allWL
+                }
+            })
     }
 
     setActiveStatTab(event) {
@@ -159,16 +170,21 @@ class Stats extends Component {
                                     </Button>
                                 </Link>
                             </NavItem>
-                            <NavItem>
+                            {data.length > 0 && this.state.activeTab === 'current' && <NavItem>
+                                <Button color="warning" onClick={this.viewGames} size="sm">View Games&nbsp;<MdList></MdList>
+                                </Button>
+                            </NavItem>}
+
+                            {this.state.activeTab === 'current' && data.length > 5 && <NavItem>
                                 <Button color="success" size="sm">
                                     Save&nbsp;<MdSave></MdSave>
                                 </Button>
-                            </NavItem>
-                            <NavItem>
+                            </NavItem>}
+                            {data.length > 0 && <NavItem>
                                 <Button color="danger" size="sm">
                                     Delete&nbsp;<MdDelete></MdDelete>
                                 </Button>
-                            </NavItem>
+                            </NavItem>}
                         </Nav>
                     </Collapse>
                 </Navbar>
@@ -200,15 +216,24 @@ class Stats extends Component {
                                     <h4>{StatUtils.getUserGamesWon(data, this.state.activeTab)}<br/>Games Won</h4>
                                 </Col>
                                 <Col xs="6" onClick={this.viewGames} className="text-center games-played">
-                                    <h4>{data !== undefined && data !== null
+                                    <h4
+                                        style={{
+                                        display: 'inline'
+                                    }}>{data !== undefined && data !== null
                                             ? data.length
                                             : 0}<br/>Games Played</h4>
+                                    <MdChevronRight
+                                        style={{
+                                        float: 'right'
+                                    }}
+                                        height='2em'
+                                        width='2em'></MdChevronRight>
                                 </Col>
                             </Row>
                         </Card>}
 
                         {this.state.activeTab === 'all' && <Card body className="games">
-                            <CardTitle className="text-center wls-played">
+                            <CardTitle className="text-center">
                                 {data !== undefined && data !== null
                                     ? data.length
                                     : 0}<br/>Weekend Leagues Played
@@ -217,7 +242,7 @@ class Stats extends Component {
                                 <Col xs="6" className="text-center games-won">
                                     <h4>{StatUtils.getUserGamesWon(data, this.state.activeTab)}<br/>Games Won</h4>
                                 </Col>
-                                <Col xs="6" onClick={this.viewGames} className="text-center games-played">
+                                <Col xs="6" className="text-center">
                                     <h4>{StatUtils.getGamesPlayedForAll(data)}<br/>Games Played</h4>
                                 </Col>
                             </Row>
