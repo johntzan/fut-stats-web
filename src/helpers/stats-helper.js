@@ -9,7 +9,7 @@ export function getUserGamesWon(wl, type) {
         if (wl !== null) {
 
             wl.forEach(element => {
-                console.log(element);
+                // console.log(element);
                 if (element.userWon) {
                     userWins = userWins + 1;
                 }
@@ -199,7 +199,7 @@ export function getTop5Formation(wl, type) {
 
             });
 
-        console.log(result);
+        // console.log(result);
     }
 
     return result;

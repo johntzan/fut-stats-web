@@ -29,6 +29,10 @@ class ViewGames extends Component {
         if (this.state.activeTab === 'current') {
             this.state.data = this.props.location.state.currentWL
         }
+
+        this.editGame = this
+            .editGame
+            .bind(this);
     }
 
     updateSearch(event) {
@@ -38,6 +42,10 @@ class ViewGames extends Component {
                 .value
                 .toLowerCase()
         })
+    }
+
+    editGame(game) {
+        console.log('go to edit game');
     }
 
     render() {
@@ -77,7 +85,7 @@ class ViewGames extends Component {
 
                 <Row>
                     {filteredGames.length > 0
-                        ? filteredGames.map((game, index) => <Game game={game} index={index}></Game>)
+                        ? filteredGames.map((game, index) => <Game game={game} index={index} key={index}></Game>)
                         : <Col xs="12" className="text-center">
                             <Card>
                                 <CardBody>

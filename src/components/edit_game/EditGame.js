@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import NewMatchStats from './NewMatchStats';
-import UserInfo from './UserInfo';
-import OpponentInfo from './OpponentInfo';
-import MatchResults from './MatchResults';
+import GameResultsEdit from './GameResultsEdit';
+import GameStatsEdit from './GameStatsEdit';
+import OppInfoEdit from './OppInfoEdit';
+import UserInfoEdit from './UserInfoEdit';
 import {
     Container,
     Row,
@@ -15,56 +15,19 @@ import {
     Navbar,
     NavbarBrand
 } from 'reactstrap';
-import './NewMatch.css';
+import './EditGame.css';
 import MdArrowBack from 'react-icons/lib/md/arrow-back';
 import startCase from 'lodash/startCase';
 
-class NewMatch extends Component {
+class EditGame extends Component {
 
     constructor(props) {
         super(props);
-
         this.invalidFields = [];
         this.state = {
             modal: false,
-            oppInfo: {
-                oppSquad: [],
-                oppFormationSelected: "Formation",
-                oppName: "",
-                oppTeamName: "",
-                oppTeamRating: ""
-            },
-            userInfo: {
-                userFormationSelected: "Formation",
-                userTeamName: "",
-                userTeamRating: ""
-            },
-            matchResults: {
-                rageQuitChecked: false,
-                rageQuitMinute: "",
-                disconnectedFromEA: false,
-                matchGeneralNotes: "",
-                userPenScore: "",
-                oppPenScore: "",
-                userWon: false
-            },
-            matchStats: {
-                userGoals: '',
-                oppGoals: '',
-                userShots: '',
-                oppShots: '',
-                userShotsOnGoal: '',
-                oppShotsOnGoal: '',
-                userPossession: '',
-                oppPossession: '',
-                userTackles: '',
-                oppTackles: '',
-                userCorners: '',
-                oppCorners: '',
-                userPassAccuracy: '',
-                oppPassAccuracy: ''
-            }
-
+            game: this.props.location.state.game,
+            edit_game: this.props.location.state.game
         };
 
         this.handleOppInfoChanges = this
@@ -97,7 +60,6 @@ class NewMatch extends Component {
         this.toggleSaveModal = this
             .toggleSaveModal
             .bind(this);
-
     }
 
     handleMatchResultsChanges(event) {
@@ -185,13 +147,11 @@ class NewMatch extends Component {
 
     handleUserInfoChanges(event) {
         const userInfo = this.state.userInfo;
-        const target = JSON.parse(event.target.value);
         const newUserInfo = {
             ...userInfo,
-            userTeamName: target['name'],
-            userTeamRating: target['teamRating'],
-            userFormationSelected: target['formation']
+            [event.target.name]: event.target.value
         };
+
         this.setState({userInfo: newUserInfo});
     }
 
@@ -374,75 +334,77 @@ class NewMatch extends Component {
 
     render() {
         return (
-            <Container className="container-main">
-                <Navbar xs="12" color="transparent" dark expand="md">
-                    <Button
-                        onClick={this.props.history.goBack}
-                        size="lg"
-                        className="back-btn float-left"><MdArrowBack size="24"/></Button>
-                    <NavbarBrand >
-                        <h3 className="page-title">Create New Match</h3>
-                    </NavbarBrand>
-                </Navbar>
-                <Row>
-                    <Col lg="6" xs="12">
-                        <UserInfo
-                            userInfo={this.state.userInfo}
-                            handleUserInfoChanges={this.handleUserInfoChanges}></UserInfo>
-                    </Col>
-                    <Col lg="6" xs="12">
-                        <OpponentInfo
-                            oppInfo={this.state.oppInfo}
-                            handleOppInfoChanges={this.handleOppInfoChanges}
-                            handleOppInfoSquadType={this.handleOppInfoSquadType}></OpponentInfo>
-                    </Col>
-                </Row>
+            <div>
+                <Container className="container-main">
+                    <Navbar xs="12" color="transparent" dark expand="md">
+                        <Button
+                            onClick={this.props.history.goBack}
+                            size="lg"
+                            className="back-btn float-left"><MdArrowBack size="24"/></Button>
+                        <NavbarBrand >
+                            <h3 className="page-title">Edit Game</h3>
+                        </NavbarBrand>
+                    </Navbar>
+                    <Row>
+                        <Col lg="6" xs="12">
+                            <UserInfoEdit
+                                game={this.state.game}
+                                handleUserInfoChanges={this.handleUserInfoChanges}></UserInfoEdit>
+                        </Col>
+                        <Col lg="6" xs="12">
+                            <OppInfoEdit
+                                game={this.state.game}
+                                handleOppInfoChanges={this.handleOppInfoChanges}
+                                handleOppInfoSquadType={this.handleOppInfoSquadType}></OppInfoEdit>
+                        </Col>
+                    </Row>
 
-                <Row>
-                    <Col xs="12">
-                        <NewMatchStats
-                            matchStats={this.state.matchStats}
-                            handleMatchStatsChanges={this.handleMatchStatsChanges}></NewMatchStats>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs="12">
-                        <MatchResults
-                            matchStats={this.state.matchStats}
-                            matchResults={this.state.matchResults}
-                            handleMatchResultsChanges={this.handleMatchResultsChanges}
-                            handleMatchResultsChecks={this.handleMatchResultsChecks}></MatchResults>
-                    </Col>
-                </Row>
-                <Row>
-                    <Button
-                        onClick={this.saveGame}
-                        className="save-btn"
-                        color="danger"
-                        size="lg"
-                        block>
-                        Save Game
-                    </Button>
-                </Row>
+                    <Row>
+                        <Col xs="12">
+                            <GameStatsEdit
+                                game={this.state.game}
+                                handleMatchStatsChanges={this.handleMatchStatsChanges}></GameStatsEdit>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs="12">
+                            <GameResultsEdit
+                                game={this.state.game}
+                                edit_game={this.state.edit_game}
+                                handleMatchResultsChanges={this.handleMatchResultsChanges}
+                                handleMatchResultsChecks={this.handleMatchResultsChecks}></GameResultsEdit>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Button
+                            onClick={this.saveGame}
+                            className="save-btn"
+                            color="danger"
+                            size="lg"
+                            block>
+                            Save Game
+                        </Button>
+                    </Row>
 
-                <Modal
-                    isOpen={this.state.modal}
-                    toggle={this.toggleSaveModal}
-                    className="save-modal">
-                    <ModalHeader toggle={this.toggleSaveModal}>Save Game Error!</ModalHeader>
-                    <ModalBody>
-                        <h5>Please enter a value for all fields listed below:</h5>
-                        {this
-                            .invalidFields
-                            .map((invalidField) => <p key={invalidField}>{invalidField}</p>)}
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.toggleSaveModal}>OK</Button>
-                    </ModalFooter>
-                </Modal>
-            </Container>
+                    <Modal
+                        isOpen={this.state.modal}
+                        toggle={this.toggleSaveModal}
+                        className="save-modal">
+                        <ModalHeader toggle={this.toggleSaveModal}>Save Game Error!</ModalHeader>
+                        <ModalBody>
+                            <h5>Please enter a value for all fields listed below:</h5>
+                            {this
+                                .invalidFields
+                                .map((invalidField) => <p key={invalidField}>{invalidField}</p>)}
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.toggleSaveModal}>OK</Button>
+                        </ModalFooter>
+                    </Modal>
+                </Container>
+            </div>
         );
     }
 }
 
-export default NewMatch;
+export default EditGame;
