@@ -9,7 +9,7 @@ export function getUserGamesWon(wl, type) {
         if (wl !== null) {
 
             wl.forEach(element => {
-                // console.log(element);
+                console.log(element.disconnectedFromEA);
                 if (element.userWon) {
                     userWins = userWins + 1;
                 }
@@ -35,9 +35,11 @@ export function getAvgStat(wl, stat, type) {
         return result;
     } else if (type === 'current') {
         wl.forEach(element => {
-            result += Number(element[stat]);
+            if (!element.disconnectedFromEA) {
+                result += Number(element[stat]);
+            }
         });
-        return round((result / wl.length));
+        return round((result / getWeekendLeagueLength(wl)));
     }
     return result;
 }
@@ -56,7 +58,9 @@ export function getTotalsStat(wl, stat, type) {
         if (wl !== null) {
 
             wl.forEach(element => {
-                result += Number(element[stat]);
+                if (!element.disconnectedFromEA) {
+                    result += Number(element[stat]);
+                }
             });
             return (result);
         }
@@ -77,9 +81,11 @@ export function getAvgPossession(wl, stat, type) {
     } else if (type === 'current') {
         if (wl !== null) {
             wl.forEach(element => {
-                result += Number(element[stat]);
+                if (!element.disconnectedFromEA) {
+                    result += Number(element[stat]);
+                }
             });
-            return (Math.round((result / wl.length) * 100) / 100);
+            return (Math.round((result / getWeekendLeagueLength(wl)) * 100) / 100);
         }
     }
     return 0;
@@ -114,8 +120,10 @@ export function getPenaltiesCount(wl, type) {
     } else if (type === 'current') {
 
         wl.forEach(element => {
-            if (element.userGoals === element.oppGoals) {
-                count += 1;
+            if (!element.disconnectedFromEA) {
+                if (element.userGoals === element.oppGoals) {
+                    count += 1;
+                }
             }
         });
     }
@@ -135,9 +143,11 @@ export function getPenaltiesLostCount(wl, type) {
     } else if (type === 'current') {
 
         wl.forEach(element => {
-            if (element.userGoals === element.oppGoals) {
-                if (element.userPenScore < element.oppPenScore) {
-                    count += 1;
+            if (!element.disconnectedFromEA) {
+                if (element.userGoals === element.oppGoals) {
+                    if (element.userPenScore < element.oppPenScore) {
+                        count += 1;
+                    }
                 }
             }
         });
@@ -180,10 +190,12 @@ export function getTop5Formation(wl, type) {
     } else if (type === 'current') {
 
         wl.forEach(element => {
-            //checks if counts object contains element already, if so, +1, else = 1
-            counts[element.oppFormationSelected] = counts[element.oppFormationSelected]
-                ? counts[element.oppFormationSelected] + 1
-                : 1;
+            if (!element.disconnectedFromEA) {
+                //checks if counts object contains element already, if so, +1, else = 1
+                counts[element.oppFormationSelected] = counts[element.oppFormationSelected]
+                    ? counts[element.oppFormationSelected] + 1
+                    : 1;
+            }
         });
 
         let arr = toPairs(counts);
@@ -220,13 +232,15 @@ export function getTop5SquadTypes(wl, type) {
     } else if (type === 'current') {
 
         wl.forEach(element => {
-            element
-                .oppSquad
-                .forEach(squad => {
-                    counts[squad] = counts[squad]
-                        ? counts[squad] + 1
-                        : 1;
-                });
+            if (!element.disconnectedFromEA) {
+                element
+                    .oppSquad
+                    .forEach(squad => {
+                        counts[squad] = counts[squad]
+                            ? counts[squad] + 1
+                            : 1;
+                    });
+            }
         });
         let arr = toPairs(counts);
         // sort in descending order by count
@@ -247,6 +261,16 @@ export function getTop5SquadTypes(wl, type) {
 
 function getTop5SquadTypeForAll(wl) {
     return [];
+}
+
+function getWeekendLeagueLength(wl) {
+    let len = wl.length;
+    wl.forEach(element => {
+        if (element.disconnectedFromEA) {
+            len--;
+        }
+    });
+    return len;
 }
 
 function round(number) {

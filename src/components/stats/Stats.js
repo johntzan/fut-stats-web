@@ -31,7 +31,7 @@ import {
     MdArrowDropUp,
     MdChevronRight
 } from 'react-icons/lib/md';
-
+// eslint-disable-next-line
 import weekendLeague from '../../helpers/test-data.js';
 import * as StatUtils from '../../helpers/stats-helper.js';
 
@@ -175,21 +175,25 @@ class Stats extends Component {
     }
 
     getAllStats() {
-        this.setState({
-            allWeekendLeagues: JSON.parse(localStorage.getItem('allWeekendLeagues'))
-        })
+        let allWLs = localStorage.getItem('allWeekendLeagues');
+        if (allWLs !== null && allWLs !== '') {
+            this.setState({
+                allWeekendLeagues: JSON.parse(localStorage.getItem('allWeekendLeagues'))
+            })
+        }
     }
 
     getCurrentStats() {
-        this.setState({
-            currentWL: JSON.parse(localStorage.getItem('currentWL'))
-        })
+        let currWL = localStorage.getItem('currentWL');
+        if (currWL !== null && currWL !== '') {
+
+            this.setState({
+                currentWL: JSON.parse(localStorage.getItem('currentWL'))
+            })
+        }
     }
 
     componentDidMount() {
-        console.log(weekendLeague);
-        localStorage.setItem('currentWL', JSON.stringify(weekendLeague));
-        localStorage.setItem('allWeekendLeagues', JSON.stringify([]));
         this.getCurrentStats();
         this.getAllStats();
     }

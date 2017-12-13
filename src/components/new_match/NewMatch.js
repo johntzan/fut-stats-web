@@ -35,7 +35,7 @@ class NewMatch extends Component {
                 oppTeamRating: ""
             },
             userInfo: {
-                userFormationSelected: "Formation",
+                userFormationSelected: "",
                 userTeamName: "",
                 userTeamRating: ""
             },
@@ -243,21 +243,32 @@ class NewMatch extends Component {
 
     validateGame() {
         this.invalidFields = []; //reset invalid fields every time save is hit to reset validation
-        this.validateUserInfo();
-        this.validateOppInfo();
-        this.validateMatchStats();
-        this.validateMatchResults();
-        console.log('Invalid fields: ');
-        console.log(this.invalidFields);
+        if (!this.state.matchResults.disconnectedFromEA) {
+            this.validateUserInfo();
+            this.validateOppInfo();
+            this.validateMatchStats();
+            this.validateMatchResults();
+        }
         if (this.invalidFields.length === 0) {
-            console.log('Success!')
+            console.log('Successful new WL!')
             const weekendLeague = {};
             Object.assign(weekendLeague, this.state.userInfo, this.state.oppInfo, this.state.matchStats, this.state.matchResults);
             console.log(weekendLeague);
-            let currentWL = JSON.parse(localStorage.getItem('currentWL'))
-            currentWL.push(weekendLeague);
-            localStorage.setItem('currentWL', currentWL);
+            let currentWL = JSON.parse(localStorage.getItem('currentWL'));
+            if (currentWL !== null && currentWL !== '') {
+                currentWL.push(weekendLeague);
+            } else {
+                currentWL = [];
+                currentWL.push(weekendLeague);
+            }
+            localStorage.setItem('currentWL', JSON.stringify(currentWL));
+            this
+                .props
+                .history
+                .push({pathname: '/my-stats'})
         } else {
+            console.log('Invalid fields: ');
+            console.log(this.invalidFields);
             this.toggleSaveModal();
         }
     }
@@ -268,7 +279,7 @@ class NewMatch extends Component {
             .keys(this.state.userInfo)
             .forEach(key => {
                 if (key === 'userFormationSelected') {
-                    if (this.state.userInfo[key].length < 1 || this.state.userInfo[key] === 'Formation') {
+                    if (this.state.userInfo[key].length < 1) {
                         this
                             .invalidFields
                             .push(startCase(key));
@@ -318,24 +329,16 @@ class NewMatch extends Component {
     validateMatchResults() {
 
         if (this.state.matchStats.userGoals > this.state.matchStats.oppGoals) {
-            console.log('User Won!')
-            const newMatchResults = {
-                ...this.state.matchResults,
-                userWon: true
-            };
-
-            this.setState({matchResults: newMatchResults});
+            // eslint-disable-next-line
+            this.state.matchResults.userWon = true; //dont need to re render state here so no need for setState
         }
 
         //Goals validation, checking for ties and penalties score ties
         if (this.state.matchStats.userGoals === this.state.matchStats.oppGoals) {
 
             if (this.state.matchResults.userPenScore > this.state.matchResults.oppPenScore) {
-                const newMatchResults = {
-                    ...this.state.matchResults,
-                    userWon: true
-                };
-                this.setState({matchResults: newMatchResults});
+                // eslint-disable-next-line
+                this.state.matchResults.userWon = true; //don't need to re render state here so no need for setState
             }
 
             if (this.state.matchResults.userPenScore.length < 1) {
