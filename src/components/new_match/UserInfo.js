@@ -31,6 +31,28 @@ class UserInfo extends Component {
             }
         };
 
+        let localUserSquads = localStorage.getItem('userSquads');
+        if (localUserSquads !== null && localUserSquads !== '') {
+            this.state.userSquads = JSON.parse(localUserSquads);
+        } else {
+            //create local storage option with empty array
+            localStorage.setItem('userSquads', JSON.stringify([]));
+            //this.state.userSquads already set to [] in constructor
+        }
+
+        if (this.state.userSquads.length > 0) {
+            let event = {
+                target: {
+                    name: 'userInfo',
+                    value: JSON.stringify(this.state.userSquads[0])
+                }
+            }
+            //setting userInfo to first option if available
+            this
+                .props
+                .handleUserInfoChanges(event);
+        }
+
         this.toggle = this
             .toggle
             .bind(this);
@@ -110,30 +132,7 @@ class UserInfo extends Component {
         });
     }
 
-    componentDidMount() {
-        let localUserSquads = localStorage.getItem('userSquads');
-        if (localUserSquads !== null && localUserSquads !== '') {
-            this.setState({
-                userSquads: JSON.parse(localStorage.getItem('userSquads'))
-            })
-        } else {
-            localStorage.setItem('userSquads', JSON.stringify([]));
-            //this.state.userSquads already set to [] in constructor
-        }
-
-        if (this.state.userSquads.length > 0) {
-            let event = {
-                target: {
-                    name: 'userInfo',
-                    value: JSON.stringify(this.state.userSquads[0])
-                }
-            }
-            //setting userInfo to first option if available
-            this
-                .props
-                .handleUserInfoChanges(event);
-        }
-    }
+    componentDidMount() {}
 
     render() {
 
