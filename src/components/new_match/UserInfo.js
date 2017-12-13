@@ -10,11 +10,7 @@ import {
     DropdownItem,
     DropdownToggle,
     DropdownMenu,
-    Button,
-    ModalHeader,
-    Modal,
-    ModalFooter,
-    ModalBody
+    Button
 } from 'reactstrap';
 import formations from '../../helpers/formations';
 
@@ -26,8 +22,8 @@ class UserInfo extends Component {
         this.state = {
             dropdownOpen: false,
             squadListDropdownOpen: false,
-            isCreateNewSquadModalOpen: false,
-            userSquads: JSON.parse(localStorage.getItem('userSquads')),
+            isCreateNewSquadVisible: false,
+            userSquads: [],
             newSquad: {
                 name: '',
                 teamRating: '',
@@ -68,18 +64,28 @@ class UserInfo extends Component {
 
     toggleCreateNewSquad() {
         this.setState({
-            isCreateNewSquadModalOpen: !this.state.isCreateNewSquadModalOpen
+            isCreateNewSquadVisible: !this.state.isCreateNewSquadVisible
         })
     }
 
     createNewSquad() {
-        let newUserSquads = [];
-        if (this.state.userSquads !== null && this.state.userSquads !== undefined) {
-            newUserSquads = this.state.userSquads;
-        }
+        let newUserSquads = this.state.userSquads;;
         newUserSquads.push(this.state.newSquad);
+
         localStorage.setItem('userSquads', JSON.stringify(newUserSquads));
         this.setState({userSquads: newUserSquads});
+        let event = {
+            target: {
+                name: 'userInfo',
+                value: JSON.stringify(this.state.newSquad)
+            }
+        }
+        //setting userInfo to newly created.
+        this
+            .props
+            .handleUserInfoChanges(event);
+
+        //set new squad back to empty-default
         this.setState({
             newSquad: {
                 name: '',
@@ -87,6 +93,7 @@ class UserInfo extends Component {
                 teamRating: ''
             }
         })
+
         this.toggleCreateNewSquad();
 
     }
@@ -103,7 +110,30 @@ class UserInfo extends Component {
         });
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        let localUserSquads = localStorage.getItem('userSquads');
+        if (localUserSquads !== null && localUserSquads !== '') {
+            this.setState({
+                userSquads: JSON.parse(localStorage.getItem('userSquads'))
+            })
+        } else {
+            localStorage.setItem('userSquads', JSON.stringify([]));
+            //this.state.userSquads already set to [] in constructor
+        }
+
+        if (this.state.userSquads.length > 0) {
+            let event = {
+                target: {
+                    name: 'userInfo',
+                    value: JSON.stringify(this.state.userSquads[0])
+                }
+            }
+            //setting userInfo to first option if available
+            this
+                .props
+                .handleUserInfoChanges(event);
+        }
+    }
 
     render() {
 
@@ -114,6 +144,11 @@ class UserInfo extends Component {
             value={formation}>{formation}</DropdownItem>);
 
         const userSquads = this.state.userSquads;
+
+        let createNewSquadBtnVisibility = 'inline-block';
+        if (this.state.isCreateNewSquadVisible) {
+            createNewSquadBtnVisibility = 'none';
+        }
 
         return (
             <Container className="container-stats text-center">
@@ -153,56 +188,63 @@ class UserInfo extends Component {
 
                 <div className="text-center">
                     <Button
+                        disabled={this.state.isCreateNewSquadVisible}
+                        style={{
+                        display: createNewSquadBtnVisibility
+                    }}
                         color="primary"
                         onClick={this
                         .toggleCreateNewSquad
                         .bind(this)}>Create New Squad</Button>
                 </div>
-
-                <Modal
-                    isOpen={this.state.isCreateNewSquadModalOpen}
-                    toggle={this.toggleCreateNewSquad}>
-                    <ModalHeader
-                        toggle={this
-                        .toggleCreateNewSquad
-                        .bind(this)}>Create New Squad Below:</ModalHeader>
-                    <ModalBody>
-                        <Form>
+                {this.state.isCreateNewSquadVisible && <div>
+                    <Form style={{
+                        margin: '5px'
+                    }}>
+                        <InputGroup>
+                            <InputGroupAddon id='input-label'>Squad Name / Type</InputGroupAddon>
+                            <Input
+                                name="name"
+                                onChange={this.handleNewUserSquadInput}
+                                value={this.state.newSquad.name}
+                                valid={this.state.newSquad.name.length > 0}/>
+                        </InputGroup>
+                        <FormGroup>
                             <InputGroup>
-                                <InputGroupAddon id='input-label'>Squad Name / Type</InputGroupAddon>
+                                <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+                                    <DropdownToggle id="formation-dropdown-toggle" caret>
+                                        {this.state.newSquad.formation}
+                                    </DropdownToggle>
+                                    <DropdownMenu id='formation-dropdown'>
+                                        {formationsList}
+                                    </DropdownMenu>
+                                </ButtonDropdown>
                                 <Input
-                                    name="name"
+                                    type="number"
+                                    name="teamRating"
                                     onChange={this.handleNewUserSquadInput}
-                                    value={this.state.newSquad.name}/>
+                                    value={this.state.newSquad.teamRating}
+                                    valid={this.state.newSquad.teamRating.length > 0 && this.state.newSquad.teamRating.length < 3}
+                                    className="text-center"
+                                    placeholder='Team Rating'/>
                             </InputGroup>
-                            <FormGroup>
-                                <InputGroup>
-                                    <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-                                        <DropdownToggle id="formation-dropdown-toggle" caret>
-                                            {this.state.newSquad.formation}
-                                        </DropdownToggle>
-                                        <DropdownMenu id='formation-dropdown'>
-                                            {formationsList}
-                                        </DropdownMenu>
-                                    </ButtonDropdown>
-                                    <Input
-                                        type="number"
-                                        name="teamRating"
-                                        onChange={this.handleNewUserSquadInput}
-                                        value={this.state.newSquad.teamRating}
-                                        className="text-center"
-                                        placeholder='Team Rating'/>
-                                </InputGroup>
-                            </FormGroup>
-                        </Form>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.createNewSquad}>Create</Button>
-                        <Button color="secondary" onClick={this.toggleCreateNewSquad}>Close</Button>
-                    </ModalFooter>
-
-                </Modal>
+                        </FormGroup>
+                    </Form>
+                    <Button
+                        color="primary"
+                        style={{
+                        margin: '5px'
+                    }}
+                        disabled={this.state.newSquad.name.length < 1 || this.state.newSquad.formation === 'Formation' || this.state.newSquad.teamRating.length < 1 || this.state.newSquad.teamRating.length > 2}
+                        onClick={this.createNewSquad}>Create New Squad</Button>
+                    <Button
+                        color="secondary"
+                        style={{
+                        margin: '5px'
+                    }}
+                        onClick={this.toggleCreateNewSquad}>Hide</Button>
+                </div>
+}
             </Container>
         );
     }
