@@ -9,7 +9,7 @@ export function getUserGamesWon(wl, type) {
         if (wl !== null) {
 
             wl.forEach(element => {
-                console.log(element.disconnectedFromEA);
+                // console.log(element);
                 if (element.userWon) {
                     userWins = userWins + 1;
                 }
@@ -21,11 +21,27 @@ export function getUserGamesWon(wl, type) {
 }
 
 function getAllUserGamesWon(wl) {
-    return 0;
+    let userWins = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (element.userWon) {
+                userWins += 1;
+            }
+        });
+    });
+
+    return userWins;
 }
 
 export function getGamesPlayedForAll(wl) {
-    return 0;
+    let gamesPlayed = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        gamesPlayed += weekendLeague.length;
+    });
+
+    return (gamesPlayed);
 }
 
 export function getAvgStat(wl, stat, type) {
@@ -45,15 +61,23 @@ export function getAvgStat(wl, stat, type) {
 }
 
 export function getAvgStatForAll(wl, stat) {
-    //TODO: implement iteration for all wls.
-    return 0;
+    let result = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                result += Number(element[stat]);
+            }
+        });
+    });
+    return round((result / getAllWeekendLeagueLength(wl)));
 }
 
 export function getTotalsStat(wl, stat, type) {
     let result = 0;
     if (type === 'all') {
         result = getTotalStatsForAll(wl, stat);
-        return result;
+        return (result);
     } else if (type === 'current') {
         if (wl !== null) {
 
@@ -69,8 +93,16 @@ export function getTotalsStat(wl, stat, type) {
 }
 
 export function getTotalStatsForAll(wl, stat) {
-    //TODO: implement iteration for all wls.
-    return 0;
+    let result = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                result += Number(element[stat]);
+            }
+        });
+    });
+    return (result);
 }
 
 export function getAvgPossession(wl, stat, type) {
@@ -92,8 +124,16 @@ export function getAvgPossession(wl, stat, type) {
 }
 
 export function getAvgPossessionForAll(wl, stat) {
-    //TODO: implement iteration for all wls.
-    return 0;
+    let result = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                result += Number(element[stat]);
+            }
+        });
+    });
+    return (Math.round((result / getAllWeekendLeagueLength(wl)) * 100) / 100);
 }
 
 export function getUserAvgGoalPerShot(wl, type) {
@@ -131,7 +171,18 @@ export function getPenaltiesCount(wl, type) {
 }
 
 function getPenaltiesCountForAll(wl) {
-    return 0;
+    let result = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                if (element.userGoals === element.oppGoals) {
+                    result += 1;
+                }
+            }
+        });
+    });
+    return (result);
 }
 
 export function getPenaltiesLostCount(wl, type) {
@@ -156,7 +207,20 @@ export function getPenaltiesLostCount(wl, type) {
 }
 
 function getPenaltiesLostCountForAll(wl) {
-    return 0;
+    let result = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                if (element.userGoals === element.oppGoals) {
+                    if (element.userPenScore < element.oppPenScore) {
+                        result += 1;
+                    }
+                }
+            }
+        });
+    });
+    return (result);
 }
 
 export function getCountOfStat(wl, stat, type) {
@@ -165,7 +229,6 @@ export function getCountOfStat(wl, stat, type) {
         count = getCountOfStatForAll(wl, stat);
         return (count);
     } else if (type === 'current') {
-
         wl.forEach(element => {
             if (element[stat]) {
                 count += 1;
@@ -176,7 +239,16 @@ export function getCountOfStat(wl, stat, type) {
 }
 
 function getCountOfStatForAll(wl, stat) {
-    return 0;
+    let result = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (element[stat]) {
+                result += 1;
+            }
+        });
+    });
+    return (result);
 }
 
 export function getTop5Formation(wl, type) {
@@ -219,7 +291,35 @@ export function getTop5Formation(wl, type) {
 }
 
 function getTop5FormationsForAll(wl) {
-    return [];
+    let counts = {};
+    let result = [];
+
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                //checks if counts object contains element already, if so, +1, else = 1
+                counts[element.oppFormationSelected] = counts[element.oppFormationSelected]
+                    ? counts[element.oppFormationSelected] + 1
+                    : 1;
+            }
+        });
+    });
+
+    let arr = toPairs(counts);
+    // sort in descending order by count
+    arr = arr.sort(function (a, b) {
+        return b[1] - a[1];
+    });
+
+    result = arr
+        .slice(0, 4)
+        .map(function (x, index) {
+            return {Formation: x[0], Count: x[1]};
+
+        });
+
+    return result;
 }
 
 export function getTop5SquadTypes(wl, type) {
@@ -260,7 +360,38 @@ export function getTop5SquadTypes(wl, type) {
 }
 
 function getTop5SquadTypeForAll(wl) {
-    return [];
+    let counts = {};
+    let result = [];
+
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        weekendLeague.forEach(element => {
+            if (!element.disconnectedFromEA) {
+                element
+                    .oppSquad
+                    .forEach(squad => {
+                        counts[squad] = counts[squad]
+                            ? counts[squad] + 1
+                            : 1;
+                    });
+            }
+        });
+    });
+
+    let arr = toPairs(counts);
+    // sort in descending order by count
+    arr = arr.sort(function (a, b) {
+        return b[1] - a[1];
+    });
+
+    result = arr
+        .slice(0, 4)
+        .map(function (x, index) {
+            return {Squad: x[0], Count: x[1]};
+
+        });
+
+    return result;
 }
 
 function getWeekendLeagueLength(wl) {
@@ -270,6 +401,21 @@ function getWeekendLeagueLength(wl) {
             len--;
         }
     });
+    return len;
+}
+
+function getAllWeekendLeagueLength(wl) {
+    let len = 0;
+    wl.forEach(data => {
+        let weekendLeague = data.weekendLeague;
+        len += weekendLeague.length;
+        weekendLeague.forEach(element => {
+            if (element.disconnectedFromEA) {
+                len--;
+            }
+        });
+    });
+
     return len;
 }
 

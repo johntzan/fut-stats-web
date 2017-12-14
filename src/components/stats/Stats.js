@@ -146,12 +146,18 @@ class Stats extends Component {
 
         console.log(saveWL);
         let allWLs = JSON.parse(localStorage.getItem('allWeekendLeagues'));
-        allWLs.push(saveWL);
+        if (allWLs !== null && allWLs !== '') {
+            allWLs.push(saveWL);
+        } else {
+            allWLs = [];
+            allWLs.push(saveWL);
+        }
         console.log(allWLs);
         localStorage.setItem('allWeekendLeagues', JSON.stringify(allWLs)); //add current WL to All
         localStorage.setItem('currentWL', JSON.stringify([])); //reset current WL to empty
         //update state of both
         this.getCurrentStats();
+        this.getAllStats();
         this.toggleSaveModal();
     }
 
