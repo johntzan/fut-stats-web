@@ -132,7 +132,7 @@ const Game = (props) => {
                 <CardHeader>
                     <h5>#{index}
                         <span style={winOrLoseStyle}>
-                            &nbsp;{winOrLoseText}</span>&nbsp;vs. {game.oppName + '/' + game.oppTeamName}
+                            &nbsp;{winOrLoseText}</span>&nbsp;vs. {game.oppName + ' / ' + game.oppTeamName}
                     </h5>
                 </CardHeader>
                 {penalties === true
@@ -147,14 +147,18 @@ const Game = (props) => {
                                 width='2em'></MdChevronRight>
                         </CardBody>
                     : <CardBody className="text-center">
-                        <h1 className="text-center game-score">{game.userGoals + ':' + game.oppGoals}
-                        </h1>
+
+                        {game.disconnectedFromEA
+                            ? <h1 className="text-center game-score">D/C</h1>
+                            : <h1 className="text-center game-score">{game.userGoals + ':' + game.oppGoals}</h1>}
+
                         <MdChevronRight
                             style={{
                             float: 'right'
                         }}
                             height='2em'
                             width='2em'></MdChevronRight>
+
                     </CardBody>}
                 <CardFooter></CardFooter>
             </Card>
