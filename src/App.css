@@ -25,6 +25,7 @@ h3.page-title {
 .container-main {
     margin-top: 100px;
     background-color: #242A2E;
+    min-height: 100vh;
 }
 
 .example-content {
