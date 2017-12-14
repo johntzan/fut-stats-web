@@ -126,6 +126,7 @@ class MatchResults extends Component {
                                     onChange={this.props.handleMatchResultsChecks}
                                     type="checkbox"/>
                                 <p>Rage Quit?</p>
+
                                 {this.props.matchResults.rageQuitChecked && <Input
                                     valid={this.state.rageQuitMinute}
                                     type="number"
@@ -135,6 +136,7 @@ class MatchResults extends Component {
                                     value={this.props.matchResults.rageQuitMinute}
                                     placeholder="What Minute?"></Input>}
                             </Label>
+
                         </Row>
                         <Row>
                             <Label check>
@@ -144,6 +146,10 @@ class MatchResults extends Component {
                                     checked={this.props.matchResults.disconnectedFromEA}
                                     onChange={this.props.handleMatchResultsChecks}/>
                                 <p>Disconnected from EA Servers?</p>
+                                {this.props.matchResults.disconnectedFromEA && 
+                                <p style={{color: 'grey'}}>-If checked, this game's stats will not count towards averages, and are not
+                                    needed to save this game.</p>
+                                }
                             </Label>
                         </Row>
 
