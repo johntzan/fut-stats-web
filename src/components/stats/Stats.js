@@ -345,7 +345,7 @@ class Stats extends Component {
                                     user={StatUtils.getAvgStat(data, 'userGoals', this.state.activeTab)}
                                     opp={'(' + StatUtils.getAvgStat(data, 'oppGoals', this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
                                 <StatsBox
                                     lg="3"
                                     md="6"
@@ -354,7 +354,7 @@ class Stats extends Component {
                                     user={StatUtils.getAvgStat(data, 'userShots', this.state.activeTab)}
                                     opp={'(' + StatUtils.getAvgStat(data, 'oppShots', this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
                                 <StatsBox
                                     lg="3"
                                     md="6"
@@ -363,7 +363,7 @@ class Stats extends Component {
                                     user={StatUtils.getAvgStat(data, 'userShotsOnGoal', this.state.activeTab)}
                                     opp={'(' + StatUtils.getAvgStat(data, 'oppShotsOnGoal', this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
 
                                 <StatsBox
                                     lg="3"
@@ -373,7 +373,7 @@ class Stats extends Component {
                                     user={StatUtils.getUserAvgGoalPerShot(data, this.state.activeTab)}
                                     opp={'(' + StatUtils.getOppAvgGoalPerShot(data, this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
 
                                 <Col xs="12" md="6">
                                     <Card id="card-goals-diff">
@@ -430,7 +430,7 @@ class Stats extends Component {
                                     user={StatUtils.getAvgStat(data, 'userPassAccuracy', this.state.activeTab)}
                                     opp={'(' + StatUtils.getAvgStat(data, 'oppPassAccuracy', this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
                                 <StatsBox
                                     lg="4"
                                     md="6"
@@ -439,7 +439,7 @@ class Stats extends Component {
                                     user={StatUtils.getAvgStat(data, 'userTackles', this.state.activeTab)}
                                     opp={'(' + StatUtils.getAvgStat(data, 'oppTackles', this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
                                 <StatsBox
                                     lg="4"
                                     md="6"
@@ -448,7 +448,7 @@ class Stats extends Component {
                                     user={StatUtils.getAvgStat(data, 'userCorners', this.state.activeTab)}
                                     opp={'(' + StatUtils.getAvgStat(data, 'oppCorners', this.state.activeTab) + ')'}
                                     showDiff={true}
-                                    footer='(Against)'></StatsBox>
+                                    footer='(Opponent)'></StatsBox>
 
                                 <StatsBox
                                     lg="4"
@@ -503,7 +503,12 @@ class Stats extends Component {
                                             <CardBody>
                                                 <h3>No stats to view here! Start a new game below.</h3>
                                                 <Link to="/new-match">
-                                                    <Button color="primary" size="lg">Start New Game&nbsp;<MdAdd></MdAdd>
+                                                    <Button
+                                                        style={{
+                                                        margin: '10px'
+                                                    }}
+                                                        color="primary"
+                                                        size="lg">Start New Game&nbsp;<MdAdd></MdAdd>
                                                     </Button>
                                                 </Link>
                                             </CardBody>
