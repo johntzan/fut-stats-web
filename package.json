@@ -9,6 +9,7 @@
         "lodash": "^4.17.4",
         "react": "^16.1.0",
         "react-dom": "^16.1.0",
+        "react-firebaseui": "^1.0.10",
         "react-headroom": "^2.2.2",
         "react-icons": "^2.2.7",
         "react-router-dom": "^4.2.2",

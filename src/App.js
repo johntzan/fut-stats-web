@@ -8,14 +8,20 @@ import {Route, Switch} from 'react-router-dom';
 import './App.css';
 import Footer from './components/footer/Footer';
 import HeadRoom from 'react-headroom';
-
+import {
+  Container,
+  Button } from 'reactstrap';
 class App extends Component {
 
   render() {
     return (
       <div>
         <HeadRoom>
-          <h3 className="title-bar text-center">FUT STATS</h3>
+            <div className="header-div">
+            <Container className="container-header">
+            <h3 className="title-bar">Fut Stats</h3>
+            </Container>
+            </div>
         </HeadRoom>
         <Switch>
           <Route exact path="/" component={Main}></Route>
