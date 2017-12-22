@@ -1,12 +1,17 @@
-h3.title-bar {
-    color: #FFF;
+.title-bar {
+    color: #FFF !important;
     background-color: hsl(352, 92%, 31%);
-    padding: 12px;
     position: relative;
     top: 0;
     left: 0;
     right: 0;
     z-index: 999;
+    margin-bottom: 0px;
+    font-size: 1.50em;
+}
+
+a.title-bar:hover {
+    text-decoration: none;
 }
 
 h3.page-title {
@@ -52,4 +57,28 @@ h3.page-title {
 
 #root>div>div.container-main.container>nav>div>ul>li {
     margin: 5px;
+}
+
+.login-btn {
+    border: none !important;
+    background-color: transparent !important;
+    font-size: 1.50em !important;
+    color: white !important;
+}
+
+a.login-btn:hover {
+    text-decoration: none;
+}
+
+.dropdown>.btn {
+    background: transparent;
+    border: none;
+}
+
+.user-dropdown>.btn:hover,
+.user-dropdown>.btn:active,
+.user-dropdown>.btn:focus {
+    background: white;
+    border: none;
+    color: black;
 }

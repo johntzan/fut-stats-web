@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { FirebaseAuth } from 'react-firebaseui';
 import firebase from 'firebase';
-import config from '../../config/firebase-config.js';
-import {Col} from 'reactstrap';
 import './Login.css';
 
-firebase.initializeApp(config);
 
 class Login extends Component {
 
@@ -17,6 +14,7 @@ class Login extends Component {
         
         this.uiConfig = {
             signInFlow: 'popup',
+            signInSuccessUrl: '/my-stats',
             signInOptions: [
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                 {
@@ -25,21 +23,12 @@ class Login extends Component {
                     requireDisplayName: false
                 },
             ],
-            callbacks: {
-                signInSuccess: () => {
-                    this.setState({signedIn: true});
-                    return false;
-                }
-            }
         };
     }
 
     render() {
         return (
-                <Col xs="12" style={{marginTop: '20px'}}>
                 <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}></FirebaseAuth>
-                {this.state.signedIn && <h1 style={{color: 'white'}}>SIGNED IN</h1>}
-                </Col>
         );
     }
 }

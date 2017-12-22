@@ -1,16 +1,10 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import {Button, Container, Row, Col, Media, Jumbotron} from 'reactstrap';
 import Login from './login/Login';
 import graphic from '../assets/fut-stats-graphic.png';
 import newMatchGraphic from '../assets/fut-stats-new-match.png';
 
 class Main extends Component {
-
-    constructor() {
-        super();
-
-    }
 
     render() {
         return (
@@ -22,7 +16,7 @@ class Main extends Component {
                         <p><Button className="btn btn-primary btn-lg" role="button">Learn more »</Button></p>
                     </Container>
                 </Jumbotron>
-            <Container className="container-main-example" computer only>
+            <Container className="container-main-example">
                 <Row style={adRowStyle}>
                     <Col xs="12" md="6" style={{color: 'white', padding:'20px'}}>
                         <h4>Stats Overview</h4>
@@ -48,7 +42,9 @@ class Main extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Login></Login>
+                    <Col xs="12" style={{marginTop: '20px'}}>
+                        <Login></Login>
+                    </Col>
                 </Row>
             </Container>
             </div>
