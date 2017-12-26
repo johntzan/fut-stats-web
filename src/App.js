@@ -31,6 +31,20 @@ function PrivateRoute ({component: Component, authed, loading, ...rest}) {
   return null
 }
 
+function PublicRoute ({component: Component, authed, loading, ...rest}) {
+  if (!loading){
+    return (
+        <Route
+          {...rest}
+          render={(props) => authed
+            ? <Redirect to={{pathname: '/my-stats', state: {from: props.location}}} />
+            : <Component {...props} />}
+        />
+    )
+  } 
+  return null
+}
+
 const auth = {
   isAuthenticated: false,
   authenticate() {
@@ -119,8 +133,7 @@ class App extends Component {
               {auth.isAuthenticated ?
             <Dropdown className="user-dropdown"isOpen={this.state.dropdownOpen} toggle={this.toggle}>
             <DropdownToggle >
-            {this.state.user.email}&nbsp;<MdAccountCircle height='1.2em'
-                                                    width='1.2em'></MdAccountCircle>
+            {this.state.user.photoURL !== null ? <div className="user-profile" style={{backgroundImage: 'url(' + this.state.user.photoURL + ')'}}></div> : <MdAccountCircle height='1.3em' width='1.3em'></MdAccountCircle>}
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem>My Profile</DropdownItem>
@@ -140,8 +153,8 @@ class App extends Component {
             </div>
         </HeadRoom>
         <Switch>
-          <Route exact path="/" component={Main}></Route>
-          <Route path="/login" component={LoginPage}></Route>
+          <PublicRoute exact authed={auth.isAuthenticated} loading={this.state.isLoading} path="/" component={Main}></PublicRoute>
+          <PublicRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/login" component={LoginPage}></PublicRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/new-match" component={NewMatch}></PrivateRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/my-stats" component={Stats}></PrivateRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/view-games" component={ViewGames}></PrivateRoute>

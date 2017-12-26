@@ -78,7 +78,37 @@ a.login-btn:hover {
 .user-dropdown>.btn:hover,
 .user-dropdown>.btn:active,
 .user-dropdown>.btn:focus {
-    background: white;
+    background: transparent;
     border: none;
     color: black;
+    box-shadow: none;
+}
+
+.user-dropdown>.dropdown-menu {
+    color: #FFF;
+    background: hsl(352, 92%, 31%);
+    border: none
+}
+
+.user-dropdown>.dropdown-menu>.dropdown-item {
+    color: #FFF;
+}
+
+.user-dropdown>.dropdown-menu>.dropdown-item:hover,
+.user-dropdown>.dropdown-menu>.dropdown-item:active,
+.user-dropdown>.dropdown-menu>.dropdown-item:focus {
+    color: #FFF;
+    background: transparent;
+    border: none;
+    font-weight: 600;
+}
+
+.user-profile {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 }
