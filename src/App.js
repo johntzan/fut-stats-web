@@ -13,9 +13,7 @@ import HeadRoom from 'react-headroom';
 import { Container, Row, Col, Dropdown, DropdownMenu, DropdownItem, DropdownToggle} from 'reactstrap';
 import MdAccountCircle from 'react-icons/lib/md/account-circle';
 
-import config from './config/firebase-config.js';
-import firebase from 'firebase';
-firebase.initializeApp(config);
+import firebase from './config/firebase-config.js';
 
 function PrivateRoute ({component: Component, authed, loading, ...rest}) {
   if (!loading){
@@ -93,7 +91,7 @@ class App extends Component {
       }
       else{
         this.setState({ 
-          user: user,
+          user: user, //would be null here
           isLoading: false
         });
       }

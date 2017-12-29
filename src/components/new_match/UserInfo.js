@@ -13,6 +13,7 @@ import {
     Button
 } from 'reactstrap';
 import formations from '../../helpers/formations';
+import firebase from '../../config/firebase-config.js';
 
 class UserInfo extends Component {
 
@@ -31,27 +32,35 @@ class UserInfo extends Component {
             }
         };
 
-        let localUserSquads = localStorage.getItem('userSquads');
-        if (localUserSquads !== null && localUserSquads !== '') {
-            this.state.userSquads = JSON.parse(localUserSquads);
-        } else {
-            //create local storage option with empty array
-            localStorage.setItem('userSquads', JSON.stringify([]));
-            //this.state.userSquads already set to [] in constructor
-        }
+        let localUserSquads = [];
+        const thisComp = this; //getting this for using this.state in firebase function.
+        this.userId = firebase.auth().currentUser.uid;
+        firebase.database().ref(this.userId+'/squads/').once('value').then(function(snapshot) {
 
-        if (this.state.userSquads.length > 0) {
-            let event = {
-                target: {
-                    name: 'userInfo',
-                    value: JSON.stringify(this.state.userSquads[0])
-                }
+            snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val();
+                localUserSquads.push(childData);
+            });
+
+            if (localUserSquads.length > 0) {
+                thisComp.state.userSquads = localUserSquads;
+                    let event = {
+                        target: {
+                            name: 'userInfo',
+                            value: JSON.stringify(localUserSquads[0])
+                        }
+                    }
+                    //setting userInfo to first option if available
+                    thisComp
+                        .props
+                        .handleUserInfoChanges(event);
+                         
+            } else {
+                //create local storage option with empty array
+                firebase.database().ref(this.userId+'/squads/').set({});
+                //this.state.userSquads already set to [] in constructor
             }
-            //setting userInfo to first option if available
-            this
-                .props
-                .handleUserInfoChanges(event);
-        }
+        });
 
         this.toggle = this
             .toggle
@@ -91,10 +100,11 @@ class UserInfo extends Component {
     }
 
     createNewSquad() {
-        let newUserSquads = this.state.userSquads;;
+        let newUserSquads = this.state.userSquads;
         newUserSquads.push(this.state.newSquad);
-
-        localStorage.setItem('userSquads', JSON.stringify(newUserSquads));
+        
+        firebase.database().ref(this.userId+'/squads/').set((newUserSquads));
+        // localStorage.setItem('userSquads', JSON.stringify(newUserSquads));
         this.setState({userSquads: newUserSquads});
         let event = {
             target: {

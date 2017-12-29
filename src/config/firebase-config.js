@@ -1,3 +1,5 @@
+import firebase from 'firebase';
+
 let config = {
     apiKey: "AIzaSyBgbY7goyrp1rXIbXe60o-_6UcbaQAPYvM",
     authDomain: "fut-stats.firebaseapp.com",
@@ -7,4 +9,5 @@ let config = {
     messagingSenderId: "1088259858709"
   };
 
-export default config;
+firebase.initializeApp(config);
+export default firebase;
