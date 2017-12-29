@@ -49,8 +49,9 @@ import {
     Bar
 } from 'recharts';
 import {Link} from 'react-router-dom';
-
+import firebase from '../../config/firebase-config.js';
 const COLORS = ['#32B200', '#374650'];
+
 class Stats extends Component {
 
     constructor(props) {
@@ -143,18 +144,20 @@ class Stats extends Component {
             dateOfWL: date.getTime(),
             weekendLeague: this.state.currentWL
         }
-
         console.log(saveWL);
-        let allWLs = JSON.parse(localStorage.getItem('allWeekendLeagues'));
-        if (allWLs !== null && allWLs !== '') {
-            allWLs.push(saveWL);
-        } else {
-            allWLs = [];
-            allWLs.push(saveWL);
-        }
-        console.log(allWLs);
-        localStorage.setItem('allWeekendLeagues', JSON.stringify(allWLs)); //add current WL to All
-        localStorage.setItem('currentWL', JSON.stringify([])); //reset current WL to empty
+        let allWLs = [];
+            const userId = firebase.auth().currentUser.uid;
+            firebase.database().ref(userId+'/allWeekendLeagues/').once('value').then(function(snapshot) {
+    
+                snapshot.forEach(function(childSnapshot) {
+                    var childData = childSnapshot.val();
+                    allWLs.push(childData);
+                });
+
+                allWLs.push(saveWL);
+                firebase.database().ref(userId+'/allWeekendLeagues/').set(allWLs);//add current WL to All
+                firebase.database().ref(userId+'/currentWL/').set({});//reset current WL to empty
+            });
         //update state of both
         this.getCurrentStats();
         this.getAllStats();
@@ -170,33 +173,50 @@ class Stats extends Component {
 
     deleteWL() {
         console.log('deleting');
+        const userId = firebase.auth().currentUser.uid;
         if (this.state.activeTab === 'current') {
-            localStorage.setItem('currentWL', JSON.stringify([]));
+            firebase.database().ref(userId+'/currentWL/').set({});
             this.getCurrentStats();
         } else if (this.state.activeTab === 'all') {
-            localStorage.setItem('allWeekendLeagues', JSON.stringify([]));
+            firebase.database().ref(userId+'/allWeekendLeagues/').set({});
             this.getAllStats();
         }
         this.toggleDeleteModal();
     }
 
     getAllStats() {
-        let allWLs = localStorage.getItem('allWeekendLeagues');
-        if (allWLs !== null && allWLs !== '') {
-            this.setState({
-                allWeekendLeagues: JSON.parse(localStorage.getItem('allWeekendLeagues'))
+        let allWL = [];
+        const thisComp = this; //getting this for using this.state in firebase function.
+        const userId = firebase.auth().currentUser.uid;
+        firebase.database().ref(userId+'/allWeekendLeagues/').once('value').then(function(snapshot) {
+
+            snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val();
+                allWL.push(childData);
+            });
+
+            thisComp.setState({
+                allWeekendLeagues: allWL
             })
-        }
+        });
     }
 
     getCurrentStats() {
-        let currWL = localStorage.getItem('currentWL');
-        if (currWL !== null && currWL !== '') {
+        let currWL = [];
+        const thisComp = this; //getting this for using this.state in firebase function.
+        const userId = firebase.auth().currentUser.uid;
+        firebase.database().ref(userId+'/currentWL/').once('value').then(function(snapshot) {
 
-            this.setState({
-                currentWL: JSON.parse(localStorage.getItem('currentWL'))
+            snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val();
+                currWL.push(childData);
+            });
+
+            thisComp.setState({
+                currentWL: currWL
             })
-        }
+        });
+
     }
 
     componentDidMount() {
