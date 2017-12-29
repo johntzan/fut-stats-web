@@ -18,6 +18,7 @@ import {
 import './NewMatch.css';
 import MdArrowBack from 'react-icons/lib/md/arrow-back';
 import startCase from 'lodash/startCase';
+import firebase from '../../config/firebase-config.js';
 
 class NewMatch extends Component {
 
@@ -254,18 +255,23 @@ class NewMatch extends Component {
             const weekendLeague = {};
             Object.assign(weekendLeague, this.state.userInfo, this.state.oppInfo, this.state.matchStats, this.state.matchResults);
             console.log(weekendLeague);
-            let currentWL = JSON.parse(localStorage.getItem('currentWL'));
-            if (currentWL !== null && currentWL !== '') {
+
+            let currentWL = [];
+            const thisComp = this; //getting this for using this.state in firebase function.
+            const userId = firebase.auth().currentUser.uid;
+            firebase.database().ref(userId+'/currentWL/').once('value').then(function(snapshot) {
+    
+                snapshot.forEach(function(childSnapshot) {
+                    var childData = childSnapshot.val();
+                    currentWL.push(childData);
+                });
+
                 currentWL.push(weekendLeague);
-            } else {
-                currentWL = [];
-                currentWL.push(weekendLeague);
-            }
-            localStorage.setItem('currentWL', JSON.stringify(currentWL));
-            this
-                .props
-                .history
-                .push({pathname: '/my-stats'})
+                firebase.database().ref(userId+'/currentWL').set(currentWL);
+                thisComp.props.history.push({pathname: '/my-stats'});
+            });
+
+
         } else {
             console.log('Invalid fields: ');
             console.log(this.invalidFields);

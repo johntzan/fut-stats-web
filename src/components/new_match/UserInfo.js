@@ -57,7 +57,7 @@ class UserInfo extends Component {
                          
             } else {
                 //create local storage option with empty array
-                firebase.database().ref(this.userId+'/squads/').set({});
+                firebase.database().ref(thisComp.userId+'/squads/').set({});
                 //this.state.userSquads already set to [] in constructor
             }
         });
@@ -104,7 +104,6 @@ class UserInfo extends Component {
         newUserSquads.push(this.state.newSquad);
         
         firebase.database().ref(this.userId+'/squads/').set((newUserSquads));
-        // localStorage.setItem('userSquads', JSON.stringify(newUserSquads));
         this.setState({userSquads: newUserSquads});
         let event = {
             target: {
