@@ -1,0 +1,12 @@
+.edit-squad-modal>.modal-content {
+    background-color: #2c3338 !important;
+    color: white;
+}
+
+.edit-squad-modal .modal-footer {
+    border-top: 1px solid #404950 !important;
+}
+
+.edit-squad-modal .modal-header {
+    border-bottom: 1px solid #404950 !important;
+}

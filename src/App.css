@@ -82,6 +82,7 @@ a.login-btn:hover {
     border: none;
     color: black;
     box-shadow: none;
+    cursor: pointer;
 }
 
 .user-dropdown>.dropdown-menu {
@@ -101,6 +102,15 @@ a.login-btn:hover {
     background: transparent;
     border: none;
     font-weight: 600;
+    cursor: pointer;
+}
+
+.user-dropdown>.dropdown-menu>.dropdown-item>a {
+    color: #FFF;
+}
+
+.user-dropdown>.dropdown-menu>.dropdown-item>a:hover {
+    text-decoration: none;
 }
 
 .user-profile {

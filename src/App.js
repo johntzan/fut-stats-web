@@ -3,6 +3,7 @@ import NewMatch from "./components/new_match/NewMatch";
 import Stats from './components/stats/Stats';
 import ViewGames from './components/view_games/ViewGames';
 import EditGame from './components/edit_game/EditGame';
+import MySquads from './components/squads/MySquads';
 import Main from './components/Main';
 import LoginPage from './components/login/LoginPage';
 import {Link} from 'react-router-dom';
@@ -134,8 +135,11 @@ class App extends Component {
             {this.state.user.photoURL !== null ? <div className="user-profile" style={{backgroundImage: 'url(' + this.state.user.photoURL + ')'}}></div> : <MdAccountCircle height='1.3em' width='1.3em'></MdAccountCircle>}
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem>My Profile</DropdownItem>
-              <DropdownItem>My Squads</DropdownItem>
+              <DropdownItem>
+              <Link to="/squads" className="links">
+               My Squads
+              </Link>
+              </DropdownItem>
               <DropdownItem divider />
               <LogoutButton logout={this.logout}></LogoutButton>
             </DropdownMenu>
@@ -155,6 +159,7 @@ class App extends Component {
           <PublicRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/login" component={LoginPage}></PublicRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/new-match" component={NewMatch}></PrivateRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/my-stats" component={Stats}></PrivateRoute>
+          <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/squads" component={MySquads}></PrivateRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/view-games" component={ViewGames}></PrivateRoute>
           <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/edit-game" component={EditGame}></PrivateRoute>
         </Switch>
