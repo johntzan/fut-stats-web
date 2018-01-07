@@ -13,7 +13,6 @@ class Main extends Component {
                     <Container className="container-jumbotron">
                         <h1>Fut Stats Tracker</h1>
                         <p>Record all your stats from games played during your FIFA Ultimate Team Weekend League and compare stat averages between you and your opponents from each weekend.</p>
-                        <p><Button className="btn btn-primary btn-lg" role="button">Learn more »</Button></p>
                     </Container>
                 </Jumbotron>
             <Container className="container-main-example">
