@@ -1,47 +1,68 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import NewMatch from "./components/new_match/NewMatch";
-import Stats from './components/stats/Stats';
-import ViewGames from './components/view_games/ViewGames';
-import EditGame from './components/edit_game/EditGame';
-import MySquads from './components/squads/MySquads';
-import Main from './components/Main';
-import LoginPage from './components/login/LoginPage';
-import {Link} from 'react-router-dom';
-import {Route, Switch, Redirect} from 'react-router-dom';
-import './App.css';
-import Footer from './components/footer/Footer';
-import HeadRoom from 'react-headroom';
-import { Container, Row, Col, Dropdown, DropdownMenu, DropdownItem, DropdownToggle} from 'reactstrap';
-import MdAccountCircle from 'react-icons/lib/md/account-circle';
+import Stats from "./components/stats/Stats";
+import ViewGames from "./components/view_games/ViewGames";
+import EditGame from "./components/edit_game/EditGame";
+import MySquads from "./components/squads/MySquads";
+import Main from "./components/Main";
+import LoginPage from "./components/login/LoginPage";
+import PrivacyPolicy from "./components/privacy-policy/index";
+import { Link } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
+import "./App.css";
+import Footer from "./components/footer/Footer";
+import HeadRoom from "react-headroom";
+import {
+  Container,
+  Row,
+  Col,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownToggle
+} from "reactstrap";
+import MdAccountCircle from "react-icons/lib/md/account-circle";
 
-import firebase from './config/firebase-config.js';
+import firebase from "./config/firebase-config.js";
 
-function PrivateRoute ({component: Component, authed, loading, ...rest}) {
-  if (!loading){
+function PrivateRoute({ component: Component, authed, loading, ...rest }) {
+  if (!loading) {
     return (
-        <Route
-          {...rest}
-          render={(props) => authed
-            ? <Component {...props} />
-            : <Redirect to={{pathname: '/login', state: {from: props.location}}} />}
-        />
-    )
-  } 
-  return null
+      <Route
+        {...rest}
+        render={props =>
+          authed ? (
+            <Component {...props} />
+          ) : (
+            <Redirect
+              to={{ pathname: "/login", state: { from: props.location } }}
+            />
+          )
+        }
+      />
+    );
+  }
+  return null;
 }
 
-function PublicRoute ({component: Component, authed, loading, ...rest}) {
-  if (!loading){
+function PublicRoute({ component: Component, authed, loading, ...rest }) {
+  if (!loading) {
     return (
-        <Route
-          {...rest}
-          render={(props) => authed
-            ? <Redirect to={{pathname: '/my-stats', state: {from: props.location}}} />
-            : <Component {...props} />}
-        />
-    )
-  } 
-  return null
+      <Route
+        {...rest}
+        render={props =>
+          authed ? (
+            <Redirect
+              to={{ pathname: "/my-stats", state: { from: props.location } }}
+            />
+          ) : (
+            <Component {...props} />
+          )
+        }
+      />
+    );
+  }
+  return null;
 }
 
 const auth = {
@@ -52,16 +73,14 @@ const auth = {
   signout() {
     this.isAuthenticated = false;
   }
-}
+};
 
-const LogoutButton = (props) => (
+const LogoutButton = props =>
   auth.isAuthenticated && (
     <DropdownItem onClick={props.logout}>Logout</DropdownItem>
-  ) 
-);
+  );
 
 class App extends Component {
-
   constructor(props) {
     super(props);
 
@@ -82,16 +101,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         auth.authenticate();
-        this.setState({ 
+        this.setState({
           user: user,
           isLoading: false
         });
-      }
-      else{
-        this.setState({ 
+      } else {
+        this.setState({
           user: user, //would be null here
           isLoading: false
         });
@@ -99,71 +117,136 @@ class App extends Component {
     });
   }
 
-  logout(){
+  logout() {
     const thisComp = this; //either declare this outside funciton, or use arrow function below. or else this refers to functions this below.
-    firebase.auth().signOut().then(function() {
-      // Sign-out successful.\
-      auth.signout();
-      thisComp.setState({
-      user: null,
-      isLoading: false
-    });
-    thisComp.props.history.push('/login');
-    }).catch(function(error) {
-      // An error happened.
-      console.log(error);
-    });
-
+    firebase
+      .auth()
+      .signOut()
+      .then(function() {
+        // Sign-out successful.\
+        auth.signout();
+        thisComp.setState({
+          user: null,
+          isLoading: false
+        });
+        thisComp.props.history.push("/login");
+      })
+      .catch(function(error) {
+        // An error happened.
+        console.log(error);
+      });
   }
 
   render() {
     return (
       <div>
         <HeadRoom>
-            <div className="header-div">
+          <div className="header-div">
             <Container className="container-header">
-            <Row style={{    padding: '10px 0px'}}>
-              <Col xs="6" className="text-left align-self-center">
-              <Link to="/" className="title-bar">
-                Fut Stats
-              </Link>
-              </Col>
-              <Col xs="6" className="text-right align-self-center">
-              {auth.isAuthenticated ?
-            <Dropdown className="user-dropdown"isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-            <DropdownToggle >
-            {this.state.user.photoURL !== null ? <div className="user-profile" style={{backgroundImage: 'url(' + this.state.user.photoURL + ')'}}></div> : <MdAccountCircle height='1.3em' width='1.3em'></MdAccountCircle>}
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem>
-              <Link to="/squads" className="links">
-               My Squads
-              </Link>
-              </DropdownItem>
-              <DropdownItem divider />
-              <LogoutButton logout={this.logout}></LogoutButton>
-            </DropdownMenu>
-          </Dropdown>
-                : 
-              <Link to="/login" className="login-btn">
-                Login
-              </Link>
-              }
-              </Col>
-            </Row>
+              <Row style={{ padding: "10px 0px" }}>
+                <Col xs="6" className="text-left align-self-center">
+                  <Link to="/" className="title-bar">
+                    Fut Stats
+                  </Link>
+                </Col>
+                <Col xs="6" className="text-right align-self-center">
+                  {auth.isAuthenticated ? (
+                    <Dropdown
+                      className="user-dropdown"
+                      isOpen={this.state.dropdownOpen}
+                      toggle={this.toggle}
+                    >
+                      <DropdownToggle>
+                        {this.state.user.photoURL !== null ? (
+                          <div
+                            className="user-profile"
+                            style={{
+                              backgroundImage:
+                                "url(" + this.state.user.photoURL + ")"
+                            }}
+                          />
+                        ) : (
+                          <MdAccountCircle height="1.3em" width="1.3em" />
+                        )}
+                      </DropdownToggle>
+                      <DropdownMenu>
+                        <DropdownItem>
+                          <Link to="/squads" className="links">
+                            My Squads
+                          </Link>
+                        </DropdownItem>
+                        <DropdownItem divider />
+                        <LogoutButton logout={this.logout} />
+                      </DropdownMenu>
+                    </Dropdown>
+                  ) : (
+                    <Link to="/login" className="login-btn">
+                      Login
+                    </Link>
+                  )}
+                </Col>
+              </Row>
             </Container>
-            </div>
+          </div>
         </HeadRoom>
         <Switch>
-          <PublicRoute exact authed={auth.isAuthenticated} loading={this.state.isLoading} path="/" component={Main}></PublicRoute>
-          <PublicRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/login" component={LoginPage}></PublicRoute>
-          <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/new-match" component={NewMatch}></PrivateRoute>
-          <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/my-stats" component={Stats}></PrivateRoute>
-          <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/squads" component={MySquads}></PrivateRoute>
-          <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/view-games" component={ViewGames}></PrivateRoute>
-          <PrivateRoute authed={auth.isAuthenticated} loading={this.state.isLoading} path="/edit-game" component={EditGame}></PrivateRoute>
+          <PublicRoute
+            exact
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/"
+            component={Main}
+          />
+          <PublicRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/login"
+            component={LoginPage}
+          />
+          <PublicRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/privacy-policy"
+            component={PrivacyPolicy}
+          />
+          <PublicRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/terms"
+            component={PrivacyPolicy}
+          />
+          <PrivateRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/new-match"
+            component={NewMatch}
+          />
+          <PrivateRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/my-stats"
+            component={Stats}
+          />
+          <PrivateRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/squads"
+            component={MySquads}
+          />
+          <PrivateRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/view-games"
+            component={ViewGames}
+          />
+          <PrivateRoute
+            authed={auth.isAuthenticated}
+            loading={this.state.isLoading}
+            path="/edit-game"
+            component={EditGame}
+          />
         </Switch>
-        <Footer></Footer>
+        <Footer />
       </div>
     );
   }
